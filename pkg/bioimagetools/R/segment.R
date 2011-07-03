@@ -32,7 +32,7 @@
 
 
 
-segment <- function(img, nclust, beta, realZ=0,varfixed=TRUE,maxit=20, mask=array(TRUE,dim(img)), priormu=rep(NA,length(nclust)), priormusd=rep(NULL,length(nclust)) ) {
+segment <- function(img, nclust, beta, z.scale=0,varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,length(nclust)), priormusd=rep(NULL,length(nclust)) ) {
 
 dims<-dim(img)
 N <- prod(dims)
@@ -63,7 +63,7 @@ cat(paste("Iteration",counter,"."))
                     as.integer(nclust),
                     as.double(rep(0,nclust)),
                     as.double(beta), 
-                    as.double(beta*realZ), 
+                    as.double(beta*z.scale), 
                     PACKAGE="bioimagetools")[[2]]    
 	cat(".")
     oldmu<-mu
