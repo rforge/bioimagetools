@@ -189,21 +189,21 @@ return(outside(nimg,0,blobsize))
 }
 
 
-outside <- function(classimg, what, blobsize) {
+outside <- function(img, what, blobsize=1) {
 
-dims<-dim(classimg)
+dims<-dim(img)
 N <- prod(dims)
-classimg<-as.vector(classimg)
+classimg<-as.vector(img)
 tocheck<-rep(0,N)
 tocheck[1]<-1
 if (classimg[1]!=what)
 {
-print(paste("Error, classimg[1,1,1,] should be",what))
+print(paste("Error, img[1,1,1,] should be",what))
 return()
 }
 
     outside <- .C("outside",
-                    as.integer(classimg),
+                    as.integer(img),
                     as.integer(dims),
                     as.integer(c(what,blobsize)),
                     as.integer(rep(0,N)),

@@ -1,10 +1,11 @@
 \name{segment}
+\alias{segment}
 \title{Segmentation of 3D images using EM algorithm}
 \description{
 Segmentation of 3D images using EM algorithm
 }
 \usage{
-segment(img, nclust, beta, z.scale=1,varfixed=TRUE,maxit=20, mask=array(TRUE,dim(img)), priormu=rep(NA,length(nclust)), priormusd=rep(NULL,length(nclust)) ) }
+segment(img, nclust, beta, z.scale=0,varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,length(nclust)), priormusd=rep(NULL,length(nclust)) ) }
 \arguments{
   \item{img}{is a 3d arrary representing an image.}
   \item{nclust}{is the number of clusters/classes to be segmented.}

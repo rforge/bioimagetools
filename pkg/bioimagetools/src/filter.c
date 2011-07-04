@@ -37,6 +37,8 @@
 #include <R.h>
 #include <Rmath.h>
 
+int getid(int x,int y,int z,int X,int Y,int Z);
+
 void varfilter(double* intensity, double* filtered,
 	 double* settings, int* dims, int* filteredint, double* minmax) 
 {

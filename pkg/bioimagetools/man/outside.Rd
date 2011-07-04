@@ -1,4 +1,5 @@
 \name{outside}
+\alias{outside}
 \title{Segmentation of the background of 3D images based on classes}
 \description{
 Segmentation of the background of 3D images based on classes. 

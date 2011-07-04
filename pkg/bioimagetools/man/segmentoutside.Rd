@@ -1,4 +1,5 @@
-\name{segmentoutside}
+\name{segment.outside}
+\alias{segment.outside}
 \title{Segmentation of the background of 3D images based on automatic threshold}
 \description{
 Segmentation of the background of 3D images. Starting from the borders of the image, the algorithm trys to find the edges of an object in the middle of the image. From this, a threshold for the edge is defined automatically. The function then return the a logical array representing voxel inside the object. 
