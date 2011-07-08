@@ -23,20 +23,20 @@ segment(img, nclust, beta, z.scale=0,varfixed=TRUE,maxit=100, mask=array(TRUE,di
 }
 \examples{
 original<-array(1,c(300,300,50))
-original[,,20:50]<-2
-original[1:150,,]<-3
-original[,200:300,]<-1
+for (i in 1:5)original[(i*60)-(0:20),,]<-original[(i*60)-(0:20),,]+1
+for (i in 1:10)original[,(i*30)-(0:15),]<-original[,(i*30)-(0:15),]+1
+original[,,26:50]<-4-aperm(original[,,26:50],c(2,1,3))
 
 img<-array(rnorm(300*300*50,original,.2),c(300,300,50))
 img<-img-min(img)
 img<-img/max(img)
 
-beta<-matrix(rep(-.25,9),nrow=3)
-beta<-beta+0.75*diag(3)
+beta<-matrix(rep(-.5,9),nrow=3)
+beta<-beta+1.5*diag(3)
 
-seg.img<-segment(img,3,beta,z.scale=.3,varfixed=FALSE)
+seg.img<-segment(img,3,beta,z.scale=.3)
 
-print(sum(seg.img$class!=original))
+print(sum(seg.img$class!=original)/prod(dim(original)))
 }
 \author{Volker J. Schmid \email{volkerschmid@users.sourceforge.net}}
 
