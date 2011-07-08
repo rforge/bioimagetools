@@ -74,12 +74,14 @@ for (int x=0; x<X; x++)
     for (int z=0; z<Z; z++)
     {
       id=getid(x,y,z,X,Y,Z);  
+
       if (mask[id]==1)
       { 
 	for (int i=0; i<nclust; i++)
 	{
    	loglik[i]=-0.5*pow(intensity[id]-mu[i],2)/sigma[i]/sigma[i];
 	}
+
 
 	if (x!=0)
 	{
@@ -95,7 +97,7 @@ for (int x=0; x<X; x++)
 	for (int i=0; i<nclust; i++)
 	{
 	loglik[i]+=mask[nid]*beta[getid(class[nid],i,0,nclust,nclust,1)];   	
-	}
+        }
 	}
 	if (y!=0)
 	{
@@ -111,7 +113,7 @@ for (int x=0; x<X; x++)
 	for (int i=0; i<nclust; i++)
 	{
 	loglik[i]+=mask[nid]*beta[getid(class[nid],i,0,nclust,nclust,1)];   	
-	}
+        }
 	}
 	if (z!=0)
 	{
@@ -119,7 +121,7 @@ for (int x=0; x<X; x++)
 	for (int i=0; i<nclust; i++)
 	{
 	loglik[i]+=mask[nid]*betaz[getid(class[nid],i,0,nclust,nclust,1)];   	
-	}
+        }
 	}
 	if (z!=(Z-1))
 	{
@@ -127,7 +129,7 @@ for (int x=0; x<X; x++)
 	for (int i=0; i<nclust; i++)
 	{
 	loglik[i]+=mask[nid]*betaz[getid(class[nid],i,0,nclust,nclust,1)];   	
-	}
+        }
 	}
 
 	newclass=0;
@@ -137,9 +139,8 @@ for (int x=0; x<X; x++)
 	{
 	if (loglik[i]>temp)
 		{
-
 		temp=loglik[i];
-		newclass=i;
+        	newclass=i;
 		}
 
 	}

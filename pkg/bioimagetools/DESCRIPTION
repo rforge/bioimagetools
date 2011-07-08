@@ -1,6 +1,6 @@
 Package: bioimagetools
-Version: 0.01
-Date: 2011-03-23
+Version: 0.01.1
+Date: 2011-07-08
 Title: Some tools for bioimaging
 Author: Volker Schmid
 Maintainer: Volker Schmid <stats@volkerschmid.de>

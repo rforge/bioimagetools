@@ -32,12 +32,12 @@
 
 
 
-segment <- function(img, nclust, beta, z.scale=0,varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,length(nclust)), priormusd=rep(NULL,length(nclust)) ) {
+segment <- function(img, nclust, beta, z.scale=0,varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,length(nclust)), priormusd=rep(NULL,length(nclust)), min.eps=10^{-7} ) {
 
+mask<-as.vector(mask)
 dims<-dim(img)
 N <- prod(dims)
 img<-as.vector(img)
-mask<-ifelse(as.vector(mask),1,0)
 
 class <- sample(0:(nclust-1),N,rep=TRUE)
 
@@ -99,7 +99,7 @@ cat(paste("Iteration",counter,"."))
         cat("\n")
     
     if (counter==maxit){criterium<-FALSE}
-    if (sum((mu-oldmu)^2)<1e-5){criterium<-FALSE}
+    if (sum((mu-oldmu)^2)<min.eps){criterium<-FALSE}
 }	
 
 class[!mask]=-1
