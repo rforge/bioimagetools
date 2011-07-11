@@ -80,7 +80,7 @@ if (plot)
 {
 if(!is.null(file))png(file)
 temp<-hist(abstand[abstand<xlim[2]&abstand>xlim[1]],breaks=seq(xlim[1],xlim[2],length=n),main=main,xlab=xlab)
-if(stats)text(xlim[2]*.85,max(temp$counts)-2,paste("mean: ",round(mean(1000*abstand),1),"\n median: ",round(median(1000*abstand),1),"\n st.dev.: ",round(sd(1000*abstand),2)))
+if(stats)text(xlim[2]*.85,.85*max(temp$counts),paste("mean: ",round(mean(1000*abstand),1),"\n median: ",round(median(1000*abstand),1),"\n st.dev.: ",round(sd(1000*abstand),2)))
 box()
 if(!is.null(file))dev.off()
 }
