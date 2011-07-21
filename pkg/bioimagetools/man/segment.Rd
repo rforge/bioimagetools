@@ -37,6 +37,8 @@ beta<-beta+1.5*diag(3)
 seg.img<-segment(img,3,beta,z.scale=.3)
 
 print(sum(seg.img$class!=original)/prod(dim(original)))
+
+if (require(EBImage))display(seg.img$class/3)
 }
 \author{Volker J. Schmid \email{volkerschmid@users.sourceforge.net}}
 
