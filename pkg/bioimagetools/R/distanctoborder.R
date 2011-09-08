@@ -56,7 +56,7 @@ else
 valid<-c()
 for (i in 1:dim(points)[1])
 if(mask[points.discrete[i,1],points.discrete[i,2],points.discrete[i,3]]==1)
-if(classes[points.discrete[i,1],points.discrete[i,2],points.discrete[i,3]]==class2)
+if(img.classes[points.discrete[i,1],points.discrete[i,2],points.discrete[i,3]]==class2)
 {
 valid<-rbind(valid,points[i,])
 }
