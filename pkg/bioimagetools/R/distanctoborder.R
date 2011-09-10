@@ -5,9 +5,9 @@ X<-dims[1]
 Y<-dims[2]
 Z<-dims[3]
 
-points.discrete<-data.frame("x"=1+floor(X*points$X/x.microns),"y"=1+floor(Y*points$Y/y.microns),"z"=1+floor(Z*points$Z/z.microns))
+points.discrete<-data.frame("x"=1+floor(X*points[1]/x.microns),"y"=1+floor(Y*points[2]/y.microns),"z"=1+floor(Z*points[3]/z.microns))
 
-cat(".")
+cat("-")
 valid<-c()
 
 for (i in 1:dim(points.discrete)[1])
@@ -18,7 +18,7 @@ valid<-rbind(valid,points[i,])
 }
 names(valid)<-c("x","y","z")
 
-cat(".")
+cat("\b\\")
 
 x<-rep(1:X,Y*Z)
 y<-rep(rep(1:Y,each=X),Z)
@@ -29,7 +29,7 @@ nucleus<-data.frame("x"=x[which],"y"=y[which],"z"=z[which],"class"=(img.classes)
 if(is.null(class2))chromatin<-nucleus[nucleus$class!=class1,1:3]
 if(!is.null(class2))chromatin<-nucleus[nucleus$class==class2,1:3]
 
-cat(".")
+cat("\b|")
 
 #Translate voxel coordinates to microns
 chromatin$x<-(chromatin$x-1)/X*x.microns
@@ -38,7 +38,7 @@ chromatin$z<-(chromatin$z-1)/Z*z.microns
 
 abstand1<-apply(valid,1,bioimagetools..find.min.distance,chromatin,c(x.microns/X,y.microns/Y,z.microns/Z))
 
-cat(".")
+cat("\b/")
 
 if (is.null(class2))
 {
@@ -62,7 +62,7 @@ valid<-rbind(valid,points[i,])
 }
 }
 names(valid)<-c("x","y","z")
-cat(".")
+cat("\b-")
 
 chromatin<-nucleus[nucleus$class==class1,1:3]
 
@@ -71,11 +71,11 @@ chromatin$x<-(chromatin$x-1)/X*x.microns
 chromatin$y<-(chromatin$y-1)/Y*y.microns
 chromatin$z<-(chromatin$z-1)/Z*z.microns
 
-cat(".")
+cat("//")
 abstand2<-apply(valid,1,bioimagetools..find.min.distance,chromatin,c(x.microns/X,y.microns/Y,z.microns/Z))
 abstand<-c(abstand1,-abstand2)
 
-cat(".\n")
+cat("-")
 if (plot)
 {
 if(!is.null(file))png(file)
@@ -86,8 +86,10 @@ if(!is.null(file))dev.off()
 }
 else
 {
-return(abstand)
+  cat("\b")
+  return(abstand)
 }
+
 
 }
 
