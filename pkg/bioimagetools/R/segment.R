@@ -39,10 +39,59 @@ dims<-dim(img)
 N <- prod(dims)
 img<-as.vector(img)
 
-class <- sample(0:(nclust-1),N,rep=TRUE)
+qu<-quantile(img,(1:(nclust-1))/nclust)
 
-mu<-seq(.01,.99,length=nclust)
+class <- rep(0,length(img))
+for (i in 1:(nclust-1))
+class[img>qu[i]]<-i
+
+if (length(beta)==1)
+beta<-rep(beta,nclust)
+
+if (length(beta)==nclust)
+beta<-diag(beta)
+
+beta<-as.vector(beta)
+
+mu<-rep(0,nclust)
+
+if(is.na(priormu[1]))
+{
+    for (i in 1:nclust)
+	{
+	mu[i]<-mean(img[class==(i-1)],na.rm=TRUE)
+	}
+
+    for (i in 2:(nclust-1))
+	if (is.na(mu)[i])
+	{
+	mu[i]<-mean(mu[c(i-1,i+1)])
+	}
+    if (is.na(mu)[1])mu[1]<-min(img,na.rm=TRUE)
+    if (is.na(mu)[nclust])mu[nclust]<-max(img,na.rm=TRUE)
+}
+else
+{
+mu<-priormu
+class <- rep(0,length(img))
+qu<-priormu[-1]-diff(priormu)/2
+for (i in 1:(nclust-1))
+class[img>qu[i]]<-i
+}
+
 sigma<-rep(.01,nclust)
+    if(varfixed)
+	{
+	sigma<-sd(mu[class+1]-img,na.rm=TRUE)
+	sigma<-rep(sigma,nclust)
+	}
+    if (!varfixed)for (i in 1:nclust){sigma[i]<-sd(img[class==(i-1)],na.rm=TRUE)}
+
+    for (i in 1:nclust)
+	if (is.na(sigma)[i])
+	{
+	sigma[i]<-median(sigma,na.rm=TRUE)
+	}
 
 counter<-0
 criterium <- TRUE
@@ -70,11 +119,18 @@ cat(paste("Iteration",counter,"."))
 
     class[!mask]<-NA
 
+    for (i in (nclust-1):0)
+	if(sum(class==i,na.rm=TRUE)==0)
+	{
+	cat(paste("class",i,"removed"))
+	class[(class>i)&(!is.na(class))]<-class[(class>i)&(!is.na(class))]-1    
+	nclust<-nclust-1
+	}
+
     for (i in 1:nclust)
 	{
 	mu[i]<-mean(img[class==(i-1)],na.rm=TRUE)
 	}
-    for (i in 1:nclust){sigma[i]<-sd(img[class==(i-1)],na.rm=TRUE)}
 
     for (i in 1:nclust)
     if (!is.na(priormu[i]))
@@ -97,11 +153,16 @@ cat(paste("Iteration",counter,"."))
         #cat(", class sizes: ")
         #cat(table(class))
         cat("\n")
-    
+	
+
     if (counter==maxit){criterium<-FALSE}
     if (sum((mu-oldmu)^2)<min.eps){criterium<-FALSE}
 }	
 
+
+#class<-class+100
+#for (i in 100+(0:(nclust-1)))
+#class[class==(100+i)]<-order(mu)[i+1]
 class[!mask]=-1
 class<-array(class+1,dims)
 return(list("class"=class,"mu"=mu,"sigma"=sigma))
