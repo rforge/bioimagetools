@@ -77,11 +77,11 @@ for (int x=0; x<X; x++)
 
       if (mask[id]==1)
       { 
+
 	for (int i=0; i<nclust; i++)
 	{
    	loglik[i]=-0.5*pow(intensity[id]-mu[i],2)/sigma[i]/sigma[i];
 	}
-
 
 	if (x!=0)
 	{
