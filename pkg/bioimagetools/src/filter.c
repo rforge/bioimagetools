@@ -107,6 +107,133 @@ return;
 }
 
 
+void maxfilter(double* intensity, double* filtered,
+	 double* settings, int* dims, int* filteredint, double* minmax) 
+{
+GetRNGstate();
+
+int X=dims[0];
+int Y=dims[1];
+int Z=dims[2];
+int N=X*Y*Z;
+double range=settings[0];
+double zrange=settings[1];
+int id,nid;
+double intens,max;
+minmax[1]=0.0;
+minmax[0]=100000000000.0;
+int counter=0;
+int counter2=10;
+Rprintf("00");
+for (int z=0; z<Z; z++)
+    {
+for (int x=0; x<X; x++)
+{
+  for (int y=0; y<Y; y++)
+   {
+	counter++;
+	if (counter>0.1*N){
+	Rprintf("\b\b\b%i",counter2);
+	counter2=counter2+10;
+	counter=0;
+	}
+
+    	id=getid(x,y,z,X,Y,Z);  
+        max=0.0; 
+	for (int i=ceil(-range); i<range; i++)
+	{
+	for (int j=ceil(-range); j<range; j++)
+	{
+	for (int k=ceil(-range*zrange); k<(zrange*range); k++)
+	{
+	if (((x+i)>=0)&((y+j)>=0)&((z+k)>=0)&(i<(X-x))&(j<(Y-y))&(k<(Z-z)))
+	{
+	if (sqrt(i*i+j*j+k*k/zrange/zrange)<range)
+	{
+	nid=getid(x+i,y+j,z+k,X,Y,Z);   
+	intens=intensity[nid];   
+	if(intens>max){max=intens;}
+	}}}}}
+        filtered[id]=max;
+        if (filtered[id]>minmax[1]){minmax[1]=filtered[id];}
+        if (filtered[id]<minmax[0]){minmax[0]=filtered[id];}
+    }
+  }
+}
+Rprintf("\b\b\b\b");
+
+for (id=0; id<(X*Y*Z); id++)
+{
+filteredint[id]=floor((filtered[id]-minmax[0])/(minmax[1]-minmax[0])*65535);
+}
+Rprintf("done.\n");
+return;
+}
+
+void minfilter(double* intensity, double* filtered,
+	 double* settings, int* dims, int* filteredint, double* minmax) 
+{
+GetRNGstate();
+
+int X=dims[0];
+int Y=dims[1];
+int Z=dims[2];
+int N=X*Y*Z;
+double range=settings[0];
+double zrange=settings[1];
+int id,nid;
+double max,intens;
+minmax[1]=0.0;
+minmax[0]=100000000000.0;
+int counter=0;
+int counter2=10;
+Rprintf("00");
+for (int z=0; z<Z; z++)
+    {
+for (int x=0; x<X; x++)
+{
+  for (int y=0; y<Y; y++)
+   {
+	counter++;
+	if (counter>0.1*N){
+	Rprintf("\b\b\b%i",counter2);
+	counter2=counter2+10;
+	counter=0;
+	}
+
+    	id=getid(x,y,z,X,Y,Z);  
+        max=19999999.0; 
+	for (int i=ceil(-range); i<range; i++)
+	{
+	for (int j=ceil(-range); j<range; j++)
+	{
+	for (int k=ceil(-range*zrange); k<(zrange*range); k++)
+	{
+	if (((x+i)>=0)&((y+j)>=0)&((z+k)>=0)&(i<(X-x))&(j<(Y-y))&(k<(Z-z)))
+	{
+	if (sqrt(i*i+j*j+k*k/zrange/zrange)<range)
+	{
+	nid=getid(x+i,y+j,z+k,X,Y,Z);   
+	intens=intensity[nid];   
+	if(intens<max){max=intens;}
+	}}}}}
+        filtered[id]=max;
+        if (filtered[id]>minmax[1]){minmax[1]=filtered[id];}
+        if (filtered[id]<minmax[0]){minmax[0]=filtered[id];}
+    }
+  }
+}
+Rprintf("\b\b\b\b");
+
+for (id=0; id<(X*Y*Z); id++)
+{
+filteredint[id]=floor((filtered[id]-minmax[0])/(minmax[1]-minmax[0])*65535);
+}
+Rprintf("done.\n");
+return;
+}
+
+
 
 
 

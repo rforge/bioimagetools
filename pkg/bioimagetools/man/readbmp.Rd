@@ -5,7 +5,7 @@
 Function to read 2D grey-value BMP files
 }
 \usage{
-read.bmp(file) }
+readBMP(file) }
 \arguments{
   \item{file}{A character vector of file names or URLs.}
 }

@@ -53,6 +53,32 @@ if (filter=="var")
     minmax <- filtered[[6]]
     filtered <- filtered[[5]]
 }
+if (filter=="max")
+{
+    filtered <- .C("maxfilter",
+                    as.double(img),
+                    as.double(filtered),
+                    as.double(c(window,z.scale)),
+                    as.integer(dims), 
+                    as.integer(filtered),
+                    as.double(c(0,0)),
+                    PACKAGE="bioimagetools")
+    minmax <- filtered[[6]]
+    filtered <- filtered[[5]]
+}
+if (filter=="min")
+{
+    filtered <- .C("minfilter",
+                    as.double(img),
+                    as.double(filtered),
+                    as.double(c(window,z.scale)),
+                    as.integer(dims), 
+                    as.integer(filtered),
+                    as.double(c(0,0)),
+                    PACKAGE="bioimagetools")
+    minmax <- filtered[[6]]
+    filtered <- filtered[[5]]
+}
 filtered<-array(filtered,dims)
 filtered<-minmax[1]+(minmax[2]-minmax[1])*filtered/65535
 return(filtered)

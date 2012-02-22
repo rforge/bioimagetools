@@ -32,7 +32,7 @@
 
 
 
-segment <- function(img, nclust, beta, z.scale=0,varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,length(nclust)), priormusd=rep(NULL,length(nclust)), min.eps=10^{-7} ) {
+segment <- function(img, nclust, beta, z.scale=0, method="cem", varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,nclust), priormusd=rep(NULL,nclust), min.eps=10^{-7} ) {
 
 mask<-as.vector(mask)
 dims<-dim(img)
@@ -57,18 +57,27 @@ mu<-rep(0,nclust)
 
 if(is.na(priormu[1]))
 {
+if (method=="cem")
+{
     for (i in 1:nclust)
 	{
 	mu[i]<-mean(img[class==(i-1)],na.rm=TRUE)
 	}
-
+ 
     for (i in 2:(nclust-1))
 	if (is.na(mu)[i])
 	{
-	mu[i]<-mean(mu[c(i-1,i+1)])
+	mu[i]<-mean(mu[c(i-1,i+1)],na.rm=TRUE)
 	}
     if (is.na(mu)[1])mu[1]<-min(img,na.rm=TRUE)
     if (is.na(mu)[nclust])mu[nclust]<-max(img,na.rm=TRUE)
+    if (sum(is.na(mu))>0)mu<-seq(mu[1],mu[nclust],length=nclust)
+}
+if (method=="em")
+{
+mu<-seq(min(img),max(img),length=nclust)
+sigma<-rep(1/nclust,nclust)
+}
 }
 else
 {
@@ -95,14 +104,18 @@ sigma<-rep(.01,nclust)
 
 counter<-0
 criterium <- TRUE
-while(criterium)
-{
-counter<-counter+1
-cat(paste("Iteration",counter,"."))
+pdach<-matrix(rep(1/nclust,nclust*prod(dims)),ncol=prod(dims))
+pij <- rep(1,nclust)/nclust
 
+while(criterium)
+{	
+	counter<-counter+1
+	cat(paste("Iteration",counter,"."))
+if(method=="cem")
+{
     class[!mask]<-0
 
-    class <- .C("classes",
+    class<-.C("segment_cem",
                     as.double(img),
                     as.integer(class),
 		    as.integer(mask),
@@ -115,18 +128,18 @@ cat(paste("Iteration",counter,"."))
                     as.double(beta*z.scale), 
                     PACKAGE="bioimagetools")[[2]]    
 	cat(".")
-    oldmu<-mu
 
     class[!mask]<-NA
 
     for (i in (nclust-1):0)
 	if(sum(class==i,na.rm=TRUE)==0)
 	{
-	cat(paste("class",i,"removed"))
+	cat(paste("class",i+1,"removed"))
 	class[(class>i)&(!is.na(class))]<-class[(class>i)&(!is.na(class))]-1    
 	nclust<-nclust-1
 	}
-
+    oldmu<-mu[1:nclust]
+    mu <- rep(NA,nclust)
     for (i in 1:nclust)
 	{
 	mu[i]<-mean(img[class==(i-1)],na.rm=TRUE)
@@ -139,6 +152,7 @@ cat(paste("Iteration",counter,"."))
 	}
 
 
+    sigma <- rep(NA,nclust)
     if(varfixed)
 	{
 	sigma<-sd(mu[class+1]-img,na.rm=TRUE)
@@ -157,8 +171,65 @@ cat(paste("Iteration",counter,"."))
 
     if (counter==maxit){criterium<-FALSE}
     if (sum((mu-oldmu)^2)<min.eps){criterium<-FALSE}
-}	
+}#endif cem
 
+if (method=="em")
+{
+class[!mask]<-0
+
+    class<-.C("segment_cem",
+                    as.double(img),
+                    as.integer(class),
+		    as.integer(mask),
+                    as.double(mu),
+                    as.double(sigma),
+                    as.integer(dims),
+                    as.integer(nclust),
+                    as.double(rep(0,nclust)),
+                    as.double(beta), 
+                    as.double(beta*z.scale), 
+                    PACKAGE="bioimagetools")[[2]]  
+
+print(table(class))
+
+plyi<-array(NA,c(length(img),nclust))
+for (i in 1:nclust)
+  {
+ 
+    plyi[,i]<-dnorm(img,mu[i],sigma[i])
+    plyi[mask==1,i]<-0
+ 
+    plyi[,i]<- .C("segment_em",    # Berechen plyi * P(l|X)
+                  as.double(img),
+                  as.double(plyi[,i]),
+                  as.integer(mask),
+                  as.integer(class),
+                  as.integer(dims),
+                  as.integer(i-1),
+                  as.double(beta[(i-1)*nclust+i]), 
+                  as.double(beta[(i-1)*nclust+i]*z.scale), 
+                  PACKAGE="bioimagetools")[[2]]  
+    plyi[mask==1,i]<-0
+ 
+    }
+    plyisum<-apply(plyi,1,sum)
+    plyisum[plyisum==0]<-1
+ 
+    for (i in 1:nclust)plyi[,i]<-plyi[,i]/plyisum
+
+    oldmu<-mu
+    for (i in 1:nclust)print(summary(plyi[,i]))
+    for (i in 1:nclust)mu[i]<-sum(plyi[,i]*img)/sum(plyi[,i])
+    for (i in 1:nclust)sigma[i]<-sqrt(sum(plyi[,i]*(img-mu[i])^2)/sum(plyi[,i]))
+  
+  print(mu)
+  print(sigma)
+
+    if (counter==maxit){criterium<-FALSE}
+    if (sum((mu-oldmu)^2)<min.eps){criterium<-FALSE}
+cat(".")
+}
+}#endif while loop
 
 #class<-class+100
 #for (i in 100+(0:(nclust-1)))

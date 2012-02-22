@@ -51,7 +51,7 @@ xyz[0]=id-(xyz[1]*X);
 return;
 }
 
-void classes(double* intensity, 
+void segment_cem(double* intensity, 
 	 int* class, int* mask,
 	 double* mu, double* sigma,
 	 int* dims, int* settings, double* loglik,
@@ -142,7 +142,6 @@ for (int x=0; x<X; x++)
 		temp=loglik[i];
         	newclass=i;
 		}
-
 	}
 	class[id]=newclass;
      }
@@ -150,6 +149,76 @@ for (int x=0; x<X; x++)
 }
 }
 return;
+}
+
+void segment_em(double* intensity, 
+	 double* p, int* mask, 
+         int* class,
+	 int* dims, int* i0, 
+	double* beta0, double* betaz0) 
+{
+   GetRNGstate();
+   int X=dims[0]; 
+   int Y=dims[1]; 
+   int Z=dims[2];
+   int id,nid;
+   int i=i0[0];
+   double logp=0;
+   double beta=beta0[0];
+   double betaz=betaz0[0];
+
+   for (int x=0; x<X; x++)
+     {
+      for (int y=0; y<Y; y++)
+	 {
+	   for (int z=0; z<Z; z++)
+	     {
+	       id=getid(x,y,z,X,Y,Z);  
+	       if (mask[id]==1)
+		 { 
+		   logp=0;
+		   if (x!=0)
+		     {
+		       nid=getid(x-1,y,z,X,Y,Z);
+                       if (i==class[nid]){logp=logp+beta;}
+                       if (i!=class[nid]){logp=logp-beta;}
+                     }
+		   if (x!=(X-1))
+		     {
+		       nid=getid(x+1,y,z,X,Y,Z);
+                       if (i==class[nid]){logp=logp+beta;}
+                       if (i!=class[nid]){logp=logp-beta;}
+		     }
+		   if (y!=0)
+		     {
+		       nid=getid(x,y-1,z,X,Y,Z);
+                       if (i==class[nid]){logp=logp+beta;}
+                       if (i!=class[nid]){logp=logp-beta;}
+		     }
+		   if (y!=(Y-1))
+		     {
+		       nid=getid(x,y+1,z,X,Y,Z);
+                       if (i==class[nid]){logp=logp+beta;}
+                       if (i!=class[nid]){logp=logp-beta;}
+		     }
+		   if (z!=0)
+		     {
+		       nid=getid(x,y,z-1,X,Y,Z);
+                       if (i==class[nid]){logp=logp+betaz;}
+                       if (i!=class[nid]){logp=logp-betaz;}
+		     }
+		   if (z!=(Z-1))
+		     {
+		       nid=getid(x,y,z+1,X,Y,Z);
+                       if (i==class[nid]){logp=logp+betaz;}
+                       if (i!=class[nid]){logp=logp-betaz;}
+		     }
+                   p[id]=p[id]*exp(logp);
+		 }
+	     }
+	 }
+     }
+   return;
 }
 
 void docheck(int id, int* class, int what, int* outside, int* tocheck, int* checked, int* xyz, int blobsize, int* dims)

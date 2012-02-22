@@ -1,4 +1,4 @@
-nextneighbourdistribution<-function(X,Y,Z,X2=X,Y2=Y,Z2=Z,same=TRUE,psz=25,main="Next neighbour distribution",file=NULL)
+nndist<-function(X,Y,Z,X2=X,Y2=Y,Z2=Z,same=TRUE,psz=25,main="Next neighbour distribution",file=NULL)
 {
 if(!is.null(file))png(file)
 nn<-nextneighbours(X,Y,Z,X2,Y2,Z2,same=same,psz=psz)

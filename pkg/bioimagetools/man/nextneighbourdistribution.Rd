@@ -1,10 +1,11 @@
-\name{nextneighbourdistribution}
+\name{nndist}
+\alias{nndist}
 \title{Ploting next neighbour distribution of 3D point patterns}
 \description{
 Computes and plots next neighbour distributions of 3D point patterns. 
 }
 \usage{
-nextneighbourdistribution(X,Y,Z,X2=X,Y2=Y,Z2=Z,same=TRUE,psz=25,main="Next neighbour distribution",file=NULL)
+nndist(X,Y,Z,X2=X,Y2=Y,Z2=Z,same=TRUE,psz=25,main="Next neighbour distribution",file=NULL)
 }
 \arguments{
   \item{X}{X coordinate of (first) point pattern in microns.}
