@@ -32,7 +32,7 @@
 
 
 
-segment <- function(img, nclust, beta, z.scale=0, method="cem", varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,nclust), priormusd=rep(NULL,nclust), min.eps=10^{-7} ) {
+segment <- function(img, nclust, beta, z.scale=0, method="cem", varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,nclust), priormusd=rep(NULL,nclust), min.eps=10^{-7}, inforce.nclust=FALSE ) {
 
 mask<-as.vector(mask)
 dims<-dim(img)
@@ -106,7 +106,7 @@ counter<-0
 criterium <- TRUE
 pdach<-matrix(rep(1/nclust,nclust*prod(dims)),ncol=prod(dims))
 pij <- rep(1,nclust)/nclust
-
+nclust0<-nclust
 while(criterium)
 {	
 	counter<-counter+1
@@ -131,10 +131,11 @@ if(method=="cem")
 
     class[!mask]<-NA
 
+    
     for (i in (nclust-1):0)
 	if(sum(class==i,na.rm=TRUE)==0)
 	{
-	cat(paste("class",i+1,"removed"))
+	cat(paste("class",i+1,"removed "))
 	class[(class>i)&(!is.na(class))]<-class[(class>i)&(!is.na(class))]-1    
 	nclust<-nclust-1
 	}
@@ -144,7 +145,6 @@ if(method=="cem")
 	{
 	mu[i]<-mean(img[class==(i-1)],na.rm=TRUE)
 	}
-
     for (i in 1:nclust)
     if (!is.na(priormu[i]))
 	{
@@ -171,6 +171,23 @@ if(method=="cem")
 
     if (counter==maxit){criterium<-FALSE}
     if (sum((mu-oldmu)^2)<min.eps){criterium<-FALSE}
+
+    if (inforce.nclust)
+    while(nclust!=nclust0)
+	{
+        criterium<-TRUE
+	cat ("inforce nclust ")
+	t<-table(class)
+	w<-which(t==max(t))
+	class[(class>w)&(!is.na(class))]<-class[(class>w)&(!is.na(class))]+1   	
+	nn<-sum(class==w)
+	class[(class==w)&(img>mu[w])&(!is.na(class))]<-class[(class==w)&(img>mu[w])&(!is.na(class))]+1	
+	if(w==1){d<-(mu[2]-mu[1])/2;mu<-c(mu[1]+c(-d,d),mu[-1])}
+	if(w==nclust){d<-(mu[nclust]-mu[nclust-1])/2;mu<-c(mu[-nclust],mu[nclust]+c(-d,d))}
+	if((w!=1)&(w!=nclust)){d<-min(mu[w+1]-mu[w],mu[w]-mu[w-1])/2;mu<-c(mu[1:(w-1)],mu[w]+c(-d,d),mu[(w+1):nclust])}
+	nclust<-nclust+1
+	}
+
 }#endif cem
 
 if (method=="em")
