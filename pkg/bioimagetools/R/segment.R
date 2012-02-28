@@ -32,7 +32,7 @@
 
 
 
-segment <- function(img, nclust, beta, z.scale=0, method="cem", varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,nclust), priormusd=rep(NULL,nclust), min.eps=10^{-7}, inforce.nclust=FALSE ) {
+segment <- function(img, nclust, beta, z.scale=0, method="cem", varfixed=TRUE,maxit=30, mask=array(TRUE,dim(img)), priormu=rep(NA,nclust), priormusd=rep(NULL,nclust), min.eps=10^{-7}, inforce.nclust=FALSE,start=NULL ) {
 
 mask<-as.vector(mask)
 dims<-dim(img)
@@ -54,10 +54,10 @@ beta<-diag(beta)
 beta<-as.vector(beta)
 
 mu<-rep(0,nclust)
-
+if(is.null(start)){start=""}
 if(is.na(priormu[1]))
 {
-if (method=="cem")
+if ((method=="cem")&(start!="equal"))
 {
     for (i in 1:nclust)
 	{
@@ -73,7 +73,7 @@ if (method=="cem")
     if (is.na(mu)[nclust])mu[nclust]<-max(img,na.rm=TRUE)
     if (sum(is.na(mu))>0)mu<-seq(mu[1],mu[nclust],length=nclust)
 }
-if (method=="em")
+if ((method=="em")|(start=="equal"))
 {
 mu<-seq(min(img),max(img),length=nclust)
 sigma<-rep(1/nclust,nclust)
