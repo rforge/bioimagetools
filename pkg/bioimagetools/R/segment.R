@@ -159,7 +159,7 @@ if(method=="cem")
 	sigma<-rep(sigma,nclust)
 	}
     if (!varfixed)for (i in 1:nclust){sigma[i]<-sd(img[class==(i-1)],na.rm=TRUE)}
-
+    sigma[is.na(sigma)]<-1e-6
 	cat(". class mean: ")
         cat(round(mu,3))
         cat(", class sigma: ")
