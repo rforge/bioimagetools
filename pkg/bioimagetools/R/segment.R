@@ -177,8 +177,8 @@ if(method=="cem")
 	{
         criterium<-TRUE
 	cat ("inforce nclust ")
-	t<-table(class)
-	w<-which(t==max(t))
+	#t<-table(class)
+	w<-which(sigma==max(sigma))
 	class[(class>w)&(!is.na(class))]<-class[(class>w)&(!is.na(class))]+1   	
 	nn<-sum(class==w)
 	class[(class==w)&(img>mu[w])&(!is.na(class))]<-class[(class==w)&(img>mu[w])&(!is.na(class))]+1	
