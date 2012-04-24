@@ -36,6 +36,22 @@ segment <- function(img, nclust, beta, z.scale=0, method="cem", varfixed=TRUE,ma
 
 mask<-as.vector(mask)
 dims<-dim(img)
+dims.m<-dim(mask)
+
+d2<-FALSE
+if (length(dim)==2)
+  {
+    d2<-TRUE
+    mask<-array(mask,c(dims.m,1))
+    img<-array(img,c(dims,1))
+    dims<-dim(img)
+    dim.m<-dim(mask)
+  }
+if (length(dim.m)==2)
+  {
+    mask<-array(mask,c(dims.m,dims[3]))
+  }
+
 N <- prod(dims)
 img<-as.vector(img)
 
@@ -253,6 +269,12 @@ cat(".")
 #class[class==(100+i)]<-order(mu)[i+1]
 class[!mask]=-1
 class<-array(class+1,dims)
+
+if(d2)
+  {
+class<-class[,,1]
+}
+
 return(list("class"=class,"mu"=mu,"sigma"=sigma))
 }
 
