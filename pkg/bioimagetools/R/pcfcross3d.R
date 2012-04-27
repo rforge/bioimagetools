@@ -1,9 +1,9 @@
 pcf.cross.3D<-
-function(X,Y,Z,X2,Y2,Z2,psz=25,width=1,intensity=NULL,intensity2=NULL,multicore=FALSE,bw=0.01)
+function(X,Y,Z,X2,Y2,Z2,psz=25,width=1,intensity=NULL,intensity2=NULL,parallel=FALSE,bw=0.01)
 {
 actualwidth=width
 width=1.1*width
-if(multicore)require(multicore)
+if(parallel)require(parallel)
 N<-length(X)
 N2<-length(X2)
 width.psz<-floor(width*psz)+1
@@ -61,8 +61,8 @@ if (!is.null(intensity))int<-c(int,intensity.mx[x[i],y[i],z[i]]*intensity.mx2[x2
 return(rbind(res,int))
 }
 
-if(multicore)dist<-mclapply(1:N,extractneighbour)
-if(!multicore)dist<-lapply(1:N,extractneighbour)
+if(parallel)dist<-mclapply(1:N,extractneighbour)
+if(!parallel)dist<-lapply(1:N,extractneighbour)
 dist<-unlist(dist)
 if(!is.null(intensity))
 {

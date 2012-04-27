@@ -45,9 +45,9 @@ if (length(dim)==2)
     mask<-array(mask,c(dims.m,1))
     img<-array(img,c(dims,1))
     dims<-dim(img)
-    dim.m<-dim(mask)
+    dims.m<-dim(mask)
   }
-if (length(dim.m)==2)
+if (length(dims.m)==2)
   {
     mask<-array(mask,c(dims.m,dims[3]))
   }
@@ -169,7 +169,7 @@ if(method=="cem")
 
 
     sigma <- rep(NA,nclust)
-    if(varfixed)
+if(varfixed)
 	{
 	sigma<-sd(mu[class+1]-img,na.rm=TRUE)
 	sigma<-rep(sigma,nclust)
@@ -194,14 +194,36 @@ if(method=="cem")
         criterium<-TRUE
 	cat ("inforce nclust ")
 	#t<-table(class)
+	sigm=rep(NA,nclust)
+  if (!varfixed)for (i in 1:nclust){sigm[i]<-sd(img[class==(i-1)],na.rm=TRUE)}
+  if (!varfixed)sigm=sigma
 	w<-which(sigma==max(sigma))
+	if (length(w)>1)w<-w[sample(length(w),1)]
 	class[(class>w)&(!is.na(class))]<-class[(class>w)&(!is.na(class))]+1   	
 	nn<-sum(class==w)
 	class[(class==w)&(img>mu[w])&(!is.na(class))]<-class[(class==w)&(img>mu[w])&(!is.na(class))]+1	
-	if(w==1){d<-(mu[2]-mu[1])/2;mu<-c(mu[1]+c(-d,d),mu[-1])}
-	if(w==nclust){d<-(mu[nclust]-mu[nclust-1])/2;mu<-c(mu[-nclust],mu[nclust]+c(-d,d))}
-	if((w!=1)&(w!=nclust)){d<-min(mu[w+1]-mu[w],mu[w]-mu[w-1])/2;mu<-c(mu[1:(w-1)],mu[w]+c(-d,d),mu[(w+1):nclust])}
+	if(w==1){
+    d<-(mu[2]-mu[1])/2
+    mu<-c(mu[1]+c(-d,d),mu[-1])
+  }
+	if(w==nclust){
+    d<-(mu[nclust]-mu[nclust-1])/2
+    mu<-c(mu[-nclust],mu[nclust]+c(-d,d))
+  }
+	if((w!=1)&(w!=nclust)){
+   d<-min(mu[w+1]-mu[w],mu[w]-mu[w-1])/2
+   mu<-c(mu[1:(w-1)],mu[w]+c(-d,d),mu[(w+1):nclust])
+  }
+	
 	nclust<-nclust+1
+	    sigma <- rep(NA,nclust)
+if(varfixed)
+	{
+	sigma<-sd(mu[class+1]-img,na.rm=TRUE)
+	sigma<-rep(sigma,nclust)
+	}
+    if (!varfixed)for (i in 1:nclust){sigma[i]<-sd(img[class==(i-1)],na.rm=TRUE)}
+    sigma[is.na(sigma)]<-1e-6
 	}
 
 }#endif cem

@@ -1,5 +1,6 @@
-pcf3D<-function(X,Y,Z,psz=25,width=1,intensity=NULL,multicore=FALSE,bw=0.01)
+pcf3D<-function(X,Y,Z,psz=25,width=1,intensity=NULL,parallel=FALSE,bw=0.01)
 {
+if(parallel)require(parallel)
 actualwidth=width
 width=1.1*width
 if(multicore)require(multicore)
@@ -44,8 +45,8 @@ if (!is.null(intensity))int<-c(int,intensity.mx[x[i],y[i],z[i]]*intensity.mx[x[j
 return(rbind(res,int))
 }
 
-if(multicore)dist<-mclapply(1:N,extractneighbour)
-if(!multicore)dist<-lapply(1:N,extractneighbour)
+if(parallel)dist<-mclapply(1:N,extractneighbour)
+if(!parallel)dist<-lapply(1:N,extractneighbour)
 dist<-unlist(dist)
 if(!is.null(intensity))
 {
