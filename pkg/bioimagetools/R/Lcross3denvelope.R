@@ -9,7 +9,7 @@ shuffle<-function(i)
     YY<-Y2+runif(1,0,2*range)
     ZZ<-Z2+runif(1,0,2*range)
     if(use.intensity)intensity.green<-intensity3D(XX,YY,ZZ,bw=bw.int,psz=psz)
-    L.temp<-L.cross.3D(X,Y,Z,XX,YY,ZZ,psz=psz,width=width,intensity=intensity.red,intensity2=intensity.green,multicore=multicore)
+    L.temp<-L.cross.3D(X,Y,Z,XX,YY,ZZ,psz=psz,width=width,intensity=intensity.red,intensity2=intensity.green,parallel=parallel)
     return(L.temp$y)
   }
 if(!parallel)envelope<-lapply(1:N,shuffle)
@@ -18,7 +18,7 @@ envelope<-unlist(envelope)
 envelope<-array(envelope,c(length(envelope)/N,N))
 
 if(use.intensity)intensity.green<-intensity3D(X2+range,Y2+range,Z2+range,bw=bw.int,psz=psz)
-L<-L.cross.3D(X+range,Y+range,Z+range,X2+range,Y2+range,Z2+range,psz=psz,width=width,intensity=intensity.red,intensity2=intensity.green,multicore=multicore)
+L<-L.cross.3D(X+range,Y+range,Z+range,X2+range,Y2+range,Z2+range,psz=psz,width=width,intensity=intensity.red,intensity2=intensity.green,parallel=parallel)
 
 e.max<-apply(envelope,1,max)
 e.min<-apply(envelope,1,min)
