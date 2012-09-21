@@ -37,16 +37,8 @@ segment <- function(img, nclust, beta, z.scale=0, method="cem", varfixed=TRUE,ma
 mask<-as.vector(mask)
 dims<-dim(img)
 dims.m<-dim(mask)
+dd<-length(dims)
 
-d2<-FALSE
-if (length(dim)==2)
-  {
-    d2<-TRUE
-    mask<-array(mask,c(dims.m,1))
-    img<-array(img,c(dims,1))
-    dims<-dim(img)
-    dims.m<-dim(mask)
-  }
 if (length(dims.m)==2)
   {
     mask<-array(mask,c(dims.m,dims[3]))
@@ -131,7 +123,21 @@ if(method=="cem")
 {
     class[!mask]<-0
 
+    if (dd==3)
     class<-.C("segment_cem",
+                    as.double(img),
+                    as.integer(class),
+		    as.integer(mask),
+                    as.double(mu),
+                    as.double(sigma),
+                    as.integer(dims),
+                    as.integer(nclust),
+                    as.double(rep(0,nclust)),
+                    as.double(beta), 
+                    as.double(beta*z.scale), 
+                    PACKAGE="bioimagetools")[[2]]    
+    if (dd==2)
+    class<-.C("segment_cem2d",
                     as.double(img),
                     as.integer(class),
 		    as.integer(mask),
@@ -291,11 +297,6 @@ cat(".")
 #class[class==(100+i)]<-order(mu)[i+1]
 class[!mask]=-1
 class<-array(class+1,dims)
-
-if(d2)
-  {
-class<-class[,,1]
-}
 
 return(list("class"=class,"mu"=mu,"sigma"=sigma))
 }

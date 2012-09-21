@@ -1,10 +1,11 @@
-nextneighbourdistribution<-function(X,Y,Z,X2=X,Y2=Y,Z2=Z,same=TRUE,psz=25,main="Next neighbour distribution",file=NULL)
+nextneighbourdistribution<-function(X,Y,Z,X2=X,Y2=Y,Z2=Z,same=TRUE,psz=25,main="Next neighbour distribution",file=NULL, return=FALSE)
 {
 if(!is.null(file))png(file)
 nn<-nextneighbours(X,Y,Z,X2,Y2,Z2,same=same,psz=psz)
 hist.nn<-hist(nn,freq=FALSE,n=100,xlab="Distance",main=main)
 lines(density(nn,na.rm=TRUE))
 if(!is.null(file))dev.off()
+if(return)return(hist.nn)
 }
 
 nndist<-nextneighbourdistribution
@@ -52,7 +53,9 @@ if (length(potential)>1)
 d<-c()
 for (j in potential)
 d<-c(d,sqrt(sum((c(X[i],Y[i],Z[i])-c(X2[j],Y2[j],Z2[j]))^2)))
-nextneighbour[i]<-potential[d==min(d)]
+test.d<-which(d==min(d))
+test.d<-sample(test.d,1)
+nextneighbour[i]<-potential[test.d]
 }
 else
 {

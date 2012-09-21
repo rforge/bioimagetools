@@ -150,6 +150,102 @@ for (int x=0; x<X; x++)
 }
 return;
 }
+void segment_cem2d(double* intensity, 
+	 int* class, int* mask,
+	 double* mu, double* sigma,
+	 int* dims, int* settings, double* loglik,
+	double* beta, double* betaz) 
+{
+  GetRNGstate();
+
+int X=dims[0];
+int Y=dims[1];
+int nclust=settings[0];
+int id,nid;
+int newclass;
+double temp;
+ int z=0;
+ int Z=1;
+for (int x=0; x<X; x++)
+{
+  for (int y=0; y<Y; y++)
+   {
+      id=getid(x,y,z,X,Y,Z);  
+
+      if (mask[id]==1)
+      { 
+
+	for (int i=0; i<nclust; i++)
+	{
+   	loglik[i]=-0.5*pow(intensity[id]-mu[i],2)/sigma[i]/sigma[i];
+	}
+
+	if (x!=0)
+	{
+	nid=getid(x-1,y,z,X,Y,Z);
+	for (int i=0; i<nclust; i++)
+	{
+	loglik[i]+=mask[nid]*beta[getid(class[nid],i,0,nclust,nclust,1)];   	
+	}
+	}
+	if (x!=(X-1))
+	{
+	nid=getid(x+1,y,z,X,Y,Z);
+	for (int i=0; i<nclust; i++)
+	{
+	loglik[i]+=mask[nid]*beta[getid(class[nid],i,0,nclust,nclust,1)];   	
+        }
+	}
+	if (y!=0)
+	{
+	nid=getid(x,y-1,z,X,Y,Z);
+	for (int i=0; i<nclust; i++)
+	{
+	loglik[i]+=mask[nid]*beta[getid(class[nid],i,0,nclust,nclust,1)];   	
+	}
+	}
+	if (y!=(Y-1))
+	{
+	nid=getid(x,y+1,z,X,Y,Z);
+	for (int i=0; i<nclust; i++)
+	{
+	loglik[i]+=mask[nid]*beta[getid(class[nid],i,0,nclust,nclust,1)];   	
+        }
+	}
+	if (z!=0)
+	{
+	nid=getid(x,y,z-1,X,Y,Z);
+	for (int i=0; i<nclust; i++)
+	{
+	loglik[i]+=mask[nid]*betaz[getid(class[nid],i,0,nclust,nclust,1)];   	
+        }
+	}
+	if (z!=(Z-1))
+	{
+	nid=getid(x,y,z+1,X,Y,Z);
+	for (int i=0; i<nclust; i++)
+	{
+	loglik[i]+=mask[nid]*betaz[getid(class[nid],i,0,nclust,nclust,1)];   	
+        }
+	}
+
+	newclass=0;
+	temp=loglik[0];
+
+	for (int i=1; i<nclust; i++)
+	{
+	if (loglik[i]>temp)
+		{
+		temp=loglik[i];
+        	newclass=i;
+		}
+	}
+	class[id]=newclass;
+     }
+}
+}
+return;
+}
 
 void segment_em(double* intensity, 
 	 double* p, int* mask, 
