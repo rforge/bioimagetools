@@ -1,5 +1,4 @@
 ##
-##
 ## Copyright (c) 2011 Volker Schmid
 ## All rights reserved.
 ## 
