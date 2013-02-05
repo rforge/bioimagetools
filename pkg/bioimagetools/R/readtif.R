@@ -39,6 +39,7 @@ readTIF<-function(file=choose.file())
 
 writeTIF<-function(img,file,bps=NULL)
 {
+  require(tiff)
   if(is.null(bps))if(!is.null(attr(img,"bits.per.sample")))bps<-attr(img,"bits.per.sample")
   if(is.null(bps))bps<-8L
   imglist<-list()

@@ -1,11 +1,11 @@
 Package: bioimagetools
-Version: 0.02.4
-Date: 2012-09-21
+Version: 0.02.5
+Date: 2013-02-05
 Title: Some tools for bioimaging
 Author: Volker Schmid
 Maintainer: Volker Schmid <stats@volkerschmid.de>
 Depends: R (>= 2.14.0)
-Suggests: EBImage, parallel
+Suggests: EBImage, parallel, tiff
 Description: Some tools for bioimaging
 License: GPL
 URL: http://volkerschmid.de
