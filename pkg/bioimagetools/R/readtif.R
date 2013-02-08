@@ -8,7 +8,7 @@ readTIF<-function(file=choose.file())
   storage.mode(img)<-"integer"
   temp<-attributes(li[[1]])
   tmp<-gregexpr("\n",temp$description)
-  if(length(tmp>0))if (tmp[[1]][1]!=-1)
+  if(length(tmp)>0)if (tmp[[1]][1]!=-1)
     {
       temp2<-regmatches(temp$description,tmp,invert=TRUE)[[1]]
       temp3<-temp4<-c()
