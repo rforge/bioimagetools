@@ -1,7 +1,7 @@
-readTIF<-function(file=choose.file())
+readTIF<-function(file=file.choose())
 {
   require(tiff)
-  li<-readTIFF(file,all=TRUE,info=TRUE,as.is=TRUE)
+  li<-readTIFF(file,all=TRUE,info=TRUE,as.is=TRUE,native=FALSE)
   Z<-length(li)
   img<-array(0,c(dim(li[[1]]),Z))
   for (i in 1:Z)img[,,i]<-li[[i]]
@@ -27,10 +27,10 @@ readTIF<-function(file=choose.file())
   if(length(K)==0)K<-1
   if (K>1)
   {
-    img0<-array(NA,c(dim(li[[1]]),K,Z/K))
-    storage.mode(img0)<-"integer"
-    for (i in 1:K)img0[,,i,]<-img[,,seq(i,Z,by=K)]
-    img<-img0
+    img<-array(img,c(dim(li[[1]]),K,Z/K))
+    storage.mode(img)<-"integer"
+    #for (i in 1:K)img0[,,i,]<-img[,,seq(i,Z,by=K)]
+    #img<-img0
   }
   temp$dim<-dim(img)
   attributes(img)<-temp
@@ -43,8 +43,30 @@ writeTIF<-function(img,file,bps=NULL)
   if(is.null(bps))if(!is.null(attr(img,"bits.per.sample")))bps<-attr(img,"bits.per.sample")
   if(is.null(bps))bps<-8L
   imglist<-list()
-  Z<-dim(img)[3]
+  if (length(dim(img))==3)
+  {
+    Z<-dim(img)[3]
+    for (i in 1:Z)
+    imglist[[i]]<-img[,,i]/max(img[,,i])
+  }
+  if (length(dim(img))==4)
+  {
+    C<-dim(img)[3]
+    Z<-dim(img)[4]
+    k<-0
+    maxi<-1:C
+    for (j in 1:C)maxi[i]<-max(img[,,j,],na.rm=TRUE)
+    for (i in 1:Z)
+      for (j in 1:C)
+        {
+        k<-k+1
+        imglist[[k]]<-img[,,j,i]/maxi[j]
+        }
+  }
+  Z<-length(imglist)
+  ati<-attributes(img)
+  ati$dim<-dim(imglist[[1]])
   for (i in 1:Z)
-  imglist[[i]]<-img[,,i]
+    attributes(imglist[[i]])<-ati
   writeTIFF(what=imglist,where=file,reduce=TRUE,bits.per.sample=bps)
 }
