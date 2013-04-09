@@ -1,4 +1,6 @@
-distance2border<-function(points,img.classes,x.microns,y.microns,z.microns,class1,class2=NULL,mask=array(TRUE,dim(img.classes)),plot=FALSE,main="Minimal distance to border", xlab="Distance in Microns", xlim=c(-.3,.3),n=100,stats=TRUE,file=NULL)
+distance2border<-function(points,img.classes,x.microns,y.microns,z.microns,class1,class2=NULL,
+                          mask=array(TRUE,dim(img.classes)),hist=FALSE,main="Minimal distance to border",
+                          xlab="Distance in Microns", xlim=c(-.3,.3),n=20,stats=TRUE,file=NULL)
 {
 dims<-dim(img.classes)
 X<-dims[1]
@@ -71,12 +73,12 @@ chromatin$x<-(chromatin$x-1)/X*x.microns
 chromatin$y<-(chromatin$y-1)/Y*y.microns
 chromatin$z<-(chromatin$z-1)/Z*z.microns
 
-cat("//")
+cat("\b//")
 abstand2<-apply(valid,1,bioimagetools..find.min.distance,chromatin,c(x.microns/X,y.microns/Y,z.microns/Z))
 abstand<-c(abstand1,-abstand2)
 
-cat("-")
-if (plot)
+cat("\b-")
+if (hist)
 {
 if(!is.null(file))png(file)
 temp<-hist(abstand[abstand<xlim[2]&abstand>xlim[1]],breaks=seq(xlim[1],xlim[2],length=n),main=main,xlab=xlab)
@@ -84,13 +86,11 @@ if(stats)text(xlim[2]*.85,.85*max(temp$counts),paste("mean: ",round(mean(1000*ab
 box()
 if(!is.null(file))dev.off()
 }
-else
-{
+#else
+#{
   cat("\b")
   return(abstand)
-}
-
-
+#}
 }
 
 bioimagetools..find.min.distance<-function(point,voxels,microns)
