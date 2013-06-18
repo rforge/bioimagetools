@@ -12,7 +12,7 @@ image(seg$class)
 seg3d<-segment(test,nclust=5,beta=.2)
 image(seg3d$class[,,35])
 
-mask<-maskdapi(img=test)
+mask<-maskdapi(img=test,thresh=.3)
 
 std<-standardize(test,mask=mask,N=32,sd=6)
 table0(std)
