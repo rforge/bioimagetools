@@ -82,13 +82,13 @@ circlepoints<-read.table(system.file("extdata","kreispunkte.table",package="bioi
 plot(circlepoints$X,circlepoints$Y,xlim=c(0,3),ylim=c(0,3),pch=19)
 
 # a circle like image
-img<-readImage(system.file("extdata","kringel.tif",package="bioimagetools"))
+img<-readTIF(system.file("extdata","kringel.tif",package="bioimagetools"))
 img<-array(img,dim(img)) # save as array for easier handling
 image(img[,,1])
 
 #and a mask
-mask<-readImage(system.file("extdata","amask.tif",package="bioimagetools"))
-mask<-array(mask,dim(mask)) # save as array for easier handling
+mask<-readTIF(system.file("extdata","amask.tif",package="bioimagetools"))
+mask<-array(mask==65536,dim(mask)) # save as array for easier handling
 image(mask[,,1])
 
 
