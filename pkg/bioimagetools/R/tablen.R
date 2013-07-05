@@ -6,7 +6,7 @@
 #  return(cc)
 #}
 
-table0<-function(x,m=max(x))
+table.n<-function(x,m=max(x,na.rm=TRUE))
 {
   cc<-1:m
   if(require(parallel))
@@ -17,4 +17,5 @@ table0<-function(x,m=max(x))
   {
     cc<-unlist(lapply(cc,function(i,x)sum(x==i,na.rm=TRUE),x=x))    
   }
+  return(cc)
 }

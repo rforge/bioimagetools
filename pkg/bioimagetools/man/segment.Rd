@@ -17,6 +17,7 @@ segment(img, nclust, beta, z.scale=0, method="cem", varfixed=TRUE, maxit=30, mas
   \item{mask}{is a logical array, representing the voxels to be used in the segmentation.}
   \item{priormu}{is a vector with mean of the normal prior of the expected values of all classes. Default is NA, which represents no prior assumption.}
   \item{priormusd}{is a vector with standard deviations of the normal prior of the expected values of all classes.}
+  \item{inforce.nclust}{if TRUE enforces number of clusters to be nclust. Otherwise classes might be removed during algorithm.}
   \item{min.eps}{stop criterion. Minimal change in sum of squared estimate of mean in order to stop.}
 }
 \value{
