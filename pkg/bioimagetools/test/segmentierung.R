@@ -31,15 +31,37 @@ std<-standardize(test,mask=mask,N=32,sd=6)
 table.n(std,32)
 colors.in.classes(std,std)
   
+
+#simuliere Daten zum Testen
 test2<-runif(128*128,0,1)
 test2<-sort(test2)
 test2<-array(test2,c(128,128))
-green<-array(test2*runif(128*128,0,1),c(128,128))
-blue<-array(runif(128*128,0,1)^2,c(128,128))
-image(blue)
+image(test2,col=grey(seq(0,1,by=1/1000)))
 
+# Simulierter grüner Kanal hängt von test2 ab
+green<-array(test2*runif(128*128,0,1),c(128,128))
+image(green,col=grey(seq(0,1,by=1/1000)))
+
+# Simulierter roter Kanal unabhängig von test2
+red<-array(runif(128*128,0,1)^2,c(128,128))
+image(red,col=grey(seq(0,1,by=1/1000)))
+
+# Standardisiere test2 in 32 Klassen
 std<-standardize(test2,N=32,sd=4)
+
+# Berechne Tabelle der Klassenzugehörigkeiten
 t<-table.n(std,32)
+# und plotte 
 barplot(t)
-colors.in.classes(std,green)
-colors.in.classes(std,blue,col1="blue")
+# Unterste und oberste Klassen hier nicht besetzt
+
+#Auswertung: Wieviel grünes und rotes Signal in standardisierten Klassen, einschl. Tests
+cc<-colors.in.classes(std,green,blue,col1="green",col2="red",test=TRUE)
+# Verändere Threshold für Farben
+cc<-colors.in.classes(std,green,blue,sd1=1,sd2=2,col1="green",col2="blue",test=TRUE)
+
+# Segmentiere test2-Bild in 7 Klassen 
+test.seg<-segment(test2,nclust=7,beta=.3)
+image(test.seg$class)
+# Auswertung, diesmal in 7 Klassen
+cc<-colors.in.classes(test.seg$class,green,blue,col1="green",col2="blue",test=TRUE)
