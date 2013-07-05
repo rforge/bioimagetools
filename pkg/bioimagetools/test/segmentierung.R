@@ -56,7 +56,7 @@ barplot(t)
 # Unterste und oberste Klassen hier nicht besetzt
 
 #Auswertung: Wieviel grünes und rotes Signal in standardisierten Klassen, einschl. Tests
-cc<-colors.in.classes(std,green,blue,col1="green",col2="red",test=TRUE)
+cc<-colors.in.classes(std,green,red,col1="green",col2="red",test=TRUE)
 # Verändere Threshold für Farben
 cc<-colors.in.classes(std,green,blue,sd1=1,sd2=2,col1="green",col2="blue",test=TRUE)
 
