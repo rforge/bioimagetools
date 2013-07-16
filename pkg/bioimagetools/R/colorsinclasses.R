@@ -1,5 +1,5 @@
 
-colors.in.classes<-function(classes,color1,color2=NULL,mask=array(TRUE,dim(img)),N=max(classes,na.rm=TRUE),sd1=2,sd2=2,col1="green",col2="red",test=FALSE)
+colors.in.classes<-function(classes,color1,color2=NULL,mask=array(TRUE,dim(classes)),N=max(classes,na.rm=TRUE),sd1=2,sd2=2,col1="green",col2="red",test=FALSE)
 {
   no2<-ifelse(is.null(color2),TRUE,FALSE)
   classes<-array(classes,dim(classes))
