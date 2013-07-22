@@ -38,6 +38,7 @@ test2<-sort(test2)
 test2<-array(test2,c(128,128))
 image(test2,col=grey(seq(0,1,by=1/1000)))
 
+
 # Simulierter grüner Kanal hängt von test2 ab
 green<-array(test2*runif(128*128,0,1),c(128,128))
 image(green,col=grey(seq(0,1,by=1/1000)))
@@ -48,6 +49,10 @@ image(red,col=grey(seq(0,1,by=1/1000)))
 
 mask<-array(0,c(128,128))
 mask[10:100,10:100]<-TRUE
+
+test2[c(1:9,101:128),]<-runif(37*128,0,.1)
+test2[,c(1:9,101:128)]<-runif(37*128,0,.1)
+image(test2,col=grey(seq(0,1,by=1/1000)))
 
 # Standardisiere test2 in 32 Klassen
 std<-standardize(test2,N=32,sd=4)

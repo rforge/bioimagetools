@@ -2,7 +2,8 @@ standardize<-function(img,mask=array(TRUE,dim(img)),N=32,sd=1/6)
 {
   if (length(dim(img))!=length(dim(mask)))stop("Dimensions of img and mask do not match 1.")
   if (!(all.equal(dim(img),dim(mask))))stop("Dimensions of img and mask do not match 2.")
-int<-img[which(mask==1)]
+
+int<-img[mask==1]
 mb<-mean(int,na.rm=TRUE)
 sdb<-sd(int,na.rm=TRUE)
 img<-img-mb
