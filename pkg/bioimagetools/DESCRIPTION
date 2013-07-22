@@ -4,7 +4,7 @@ Date: 2013-07-22
 Title: Some tools for bioimaging
 Author: Volker Schmid
 Maintainer: Volker Schmid <stats@volkerschmid.de>
-Depends: R (>= 3.0.0)
+Depends: R (>= 2.14.0)
 Suggests: EBImage, parallel, tiff
 Description: Some tools for bioimaging
 License: GPL
