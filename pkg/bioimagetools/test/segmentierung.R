@@ -46,6 +46,9 @@ image(green,col=grey(seq(0,1,by=1/1000)))
 red<-array(runif(128*128,0,1)^2,c(128,128))
 image(red,col=grey(seq(0,1,by=1/1000)))
 
+mask<-array(0,c(128,128))
+mask[10:100,10:100]<-TRUE
+
 # Standardisiere test2 in 32 Klassen
 std<-standardize(test2,N=32,sd=4)
 
@@ -56,12 +59,12 @@ barplot(t)
 # Unterste und oberste Klassen hier nicht besetzt
 
 #Auswertung: Wieviel grünes und rotes Signal in standardisierten Klassen, einschl. Tests
-cc<-colors.in.classes(std,green,red,col1="green",col2="red",test=TRUE)
+cc<-colors.in.classes(std,green,red,col1="green",col2="red",test=TRUE,mask=mask)
 # Verändere Threshold für Farben
-cc<-colors.in.classes(std,green,blue,sd1=1,sd2=2,col1="green",col2="blue",test=TRUE)
+cc<-colors.in.classes(std,green,red,sd1=1,sd2=2,col1="green",col2="blue",test=TRUE)
 
 # Segmentiere test2-Bild in 7 Klassen 
 test.seg<-segment(test2,nclust=7,beta=.3)
 image(test.seg$class)
 # Auswertung, diesmal in 7 Klassen
-cc<-colors.in.classes(test.seg$class,green,blue,col1="green",col2="blue",test=TRUE)
+cc<-colors.in.classes(test.seg$class,green,red,col1="green",col2="blue",test=TRUE)
