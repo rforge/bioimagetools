@@ -1,5 +1,5 @@
 
-colors.in.classes<-function(classes,color1,color2=NULL,mask=array(TRUE,dim(classes)),N=max(classes,na.rm=TRUE),sd1=2,sd2=2,col1="green",col2="red",test=FALSE,plot=TRUE)
+colors.in.classes<-function(classes,color1,color2=NULL,mask=array(TRUE,dim(classes)),N=max(classes,na.rm=TRUE),thresh1=NULL,thresh2=NULL,sd1=2,sd2=2,col1="green",col2="red",test=FALSE,plot=TRUE)
 {
   no2<-ifelse(is.null(color2),TRUE,FALSE)
   classes<-array(classes,dim(classes))
@@ -10,8 +10,8 @@ colors.in.classes<-function(classes,color1,color2=NULL,mask=array(TRUE,dim(class
   color1<-color1[mask]
   if(!no2)color2<-color2[mask]
   
-  thresh1<-mean(color1)+sd1*sd(color1)
-  if(!no2)thresh2<-mean(color2)+sd2*sd(color2)
+  if(is.null(thresh1))thresh1<-mean(color1)+sd1*sd(color1)
+  if(!no2)if(is.null(thresh2))thresh2<-mean(color2)+sd2*sd(color2)
   
   t10<-table.n(classes,N)
   t1<-t10/sum(t10)

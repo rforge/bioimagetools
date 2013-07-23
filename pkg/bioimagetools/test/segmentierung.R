@@ -55,7 +55,8 @@ test2[,c(1:9,101:128)]<-runif(37*128,0,.1)
 image(test2,col=grey(seq(0,1,by=1/1000)))
 
 # Standardisiere test2 in 32 Klassen
-std<-standardize(test2,N=32,sd=4)
+std<-standardize(test2,N=32,sd=4,mask=mask)
+image(std,col=grey(seq(0,1,by=1/1000)))
 
 # Berechne Tabelle der Klassenzugehörigkeiten
 t<-table.n(std,32)

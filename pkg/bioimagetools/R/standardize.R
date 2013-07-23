@@ -14,6 +14,7 @@ img<-img+(N/2)+.5
 img<-round(img)
 img[img<1]<-0
 img[img>N]<-N+1
+img[mask!=1]<-0
 return(img)
 }
 
