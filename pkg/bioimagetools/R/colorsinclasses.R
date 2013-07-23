@@ -50,9 +50,9 @@ colors.in.classes<-function(classes,color1,color2=NULL,mask=array(TRUE,dim(class
   ret1[["dapi"]]<-t1
   ret1[["col1"]]<-t2
   if(!no2)ret1[["col2"]]<-t3
-  ret1[["dapi-n"]]<-t10
-  ret1[["col1-n"]]<-t20
-  if(!no2)ret1[["col2-n"]]<-t30
+  ret1[["dapi.n"]]<-t10
+  ret1[["col1.n"]]<-t20
+  if(!no2)ret1[["col2.n"]]<-t30
   ret<-thresh1
   if(!no2)ret<-c(thresh1,thresh2)
   ret1[["thresh"]]<-ret
