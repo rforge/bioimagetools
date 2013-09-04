@@ -1,7 +1,9 @@
-readTIF<-function(file=file.choose())
+if(0)
+  {
+  readTIF<-function(file=file.choose(),native=FALSE)
 {
   require(tiff)
-  li<-readTIFF(file,all=TRUE,info=TRUE,as.is=TRUE,native=FALSE)
+  li<-readTIFF(file,all=TRUE,info=TRUE,as.is=TRUE,native=native)
   Z<-length(li)
   img<-array(0,c(dim(li[[1]]),Z))
   for (i in 1:Z)img[,,i]<-li[[i]]
@@ -32,6 +34,8 @@ readTIF<-function(file=file.choose())
     #for (i in 1:K)img0[,,i,]<-img[,,seq(i,Z,by=K)]
     #img<-img0
   }
+  if(min(img)<0){img<-array(bitFlip(img,bitWidth=temp$bits.per.sample),dim(img))}
+  img<-aperm(img,c(2,1,3:length(dim(img))))
   temp$dim<-dim(img)
   attributes(img)<-temp
   return(img)
@@ -69,4 +73,5 @@ writeTIF<-function(img,file,bps=NULL)
   for (i in 1:Z)
     attributes(imglist[[i]])<-ati
   writeTIFF(what=imglist,where=file,reduce=TRUE,bits.per.sample=bps)
+}
 }
