@@ -1,4 +1,6 @@
-readTIF<-function (files, type, all = TRUE, ...) 
+if(0)
+  {
+  readTIF<-function (files, type, all = TRUE, ...) 
 {
   require(tiff)
   require(abind)
@@ -69,13 +71,14 @@ readTIF<-function (files, type, all = TRUE, ...)
   }
   if (is.null(stack)) 
     stop("Empty image stack.")
-  else Image(transpose(stack), colormode = if (isTRUE(charmatch(channels, 
-                                                                "G") == 1)) 
-    "Grayscale"
-             else "Color")
+  else stack #Image(transpose(stack), colormode = if (isTRUE(charmatch(channels, 
+    #                                                            "G") == 1)) 
+    #"Grayscale"
+    #         else "Color")
 }
 
 channelLayout = function(x){
   y = dim(x) 
   return( switch(if(length(y)==2) 1 else if (length(y)==3 && y[3]<=4) y[3] else 5, 'G', 'GA', 'RGB', 'RGBA', 'unknown') )
+}
 }
