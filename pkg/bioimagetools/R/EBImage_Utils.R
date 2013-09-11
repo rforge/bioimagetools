@@ -72,6 +72,7 @@ bwlabel3d <- function(im){
 	cat(", relabelling")
 
 	#re-label with 1 to no. of objects
+  #changed V.S. 11Sep13
 	labels <- sort(unique(as.vector(res)))[-1]
 	n.labels <- length(labels)
   newlabel<-1
