@@ -1,0 +1,12 @@
+Package: bioimagetools2
+Version: 0.02.10
+Date: 2013-07-22
+Title: Some tools for bioimaging
+Author: Volker Schmid
+Maintainer: Volker Schmid <stats@volkerschmid.de>
+Depends: R (>= 2.14.0)
+Imports: methods, graphics, stats, abind, utils, tiff, jpeg, png,
+        locfit, parallel
+Description: Some tools for bioimaging
+License: GPL
+URL: http://volkerschmid.de

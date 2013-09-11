@@ -1,0 +1,37 @@
+maskdapi<-function(img,thresh=0.5,filter=4)
+  {
+  #require(EBImage)
+  mb<-apply(img,3,mean)
+  mbr<-thresh*sum(range(mb))
+  mbr<-which(mbr<mb)
+  small<-min(mbr):max(mbr)
+  dims0<-dim(img)
+  img<-img[,,small]
+  dims<-dim(img)
+  img<-img-median(img)
+  img[img<0]<-0
+  img<-array(img,dims)
+  img<-img/max(img)
+  img<-filter(img,"var",filter,1/3)
+  seg<-segment(img,2,1,inforce.nclust=TRUE,varfixed=TRUE)
+  seg$class<-seg$class-1
+  X<-dim(img)[1]
+  Y<-dim(img)[2]
+  Z<-dim(img)[3]
+  flip.x<-FALSE
+  if(seg$class[1,1,1]==1)flip.x<-TRUE
+  if(flip.x)seg$class[X:1,,]<-seg$class
+  flip.y<-FALSE
+  if(seg$class[1,1,1]==1)flip.y<-TRUE
+  if(flip.y)seg$class[,Y:1,]<-seg$class
+  flip.z<-FALSE
+  if(seg$class[1,1,1]==1)flip.z<-TRUE
+  if(flip.z)seg$class[,,Z:1]<-seg$class
+  mask0<-1-outside(seg$class,0,15)
+  if(flip.x)mask0[X:1,,]<-mask0
+  if(flip.y)mask0[,Y:1,]<-mask0
+  if(flip.z)mask0[,,Z:1]<-mask0
+  mask<-array(0,dims0)
+  mask[,,small]<-array(as.integer(mask0),dim(mask0))
+  return(mask)
+}  

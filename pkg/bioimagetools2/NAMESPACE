@@ -1,0 +1,86 @@
+useDynLib("bioimagetools2")
+
+exportPattern("^[^\\.]")
+
+#exportMethods("segment")
+
+importFrom("methods", "Ops")
+importFrom("methods", "show")
+importFrom("graphics", "image")
+importFrom("graphics", "hist")
+importFrom("stats", "median")
+importFrom("abind", "abind")
+
+importFrom("tiff", "readTIFF", "writeTIFF")
+importFrom("jpeg", "readJPEG", "writeJPEG")
+importFrom("png", "readPNG", "writePNG")
+importFrom("locfit", "lp", "locfit")
+
+## classes
+exportClasses(Image)
+
+## image class, accessors
+export(Image, is.Image, as.Image, print.Image, as.raster.Image)
+export(Grayscale, Color)
+exportMethods(Ops, "[")
+export(colorMode, "colorMode<-", imageData, "imageData<-")
+export(getFrame, getNumberOfFrames)
+
+## image IO, display
+exportMethods("show")
+export(readImage, writeImage)
+export(display)
+
+## spatial transform
+export(resize, rotate)
+export(flip, flop)
+export(translate)
+export(affine)
+export(transpose)
+
+## image segmentation, objects manipulation
+export(thresh, bwlabel)
+export(watershed, propagate)
+export(ocontour)
+export(paintObjects, rmObjects, reenumerate)
+
+## statistics
+export(median.Image, quantile.Image)
+exportMethods(hist)
+
+## image enhancement, filtering
+export(normalize)
+export(filter2)
+export(gblur)
+export(medianFilter)
+
+## morphological operations
+export(makeBrush)
+export(erode, dilate, opening, closing, erodeGreyScale, dilateGreyScale, openingGreyScale, closingGreyScale, whiteTopHatGreyScale, blackTopHatGreyScale, selfcomplementaryTopHatGreyScale)
+export(distmap)
+export(floodFill, fillHull)
+
+## colorspace
+export(rgbImage, channel)
+
+## image stacking, tiling
+export(stackObjects)
+export(combine, tile, untile)
+
+## drawables
+export(drawfont, drawtext)
+export(drawCircle)
+
+## features extraction
+export(computeFeatures)
+export(computeFeatures.basic, computeFeatures.shape, computeFeatures.moment, computeFeatures.haralick)
+export(standardExpandRef)
+export(localCurvature)
+
+## deprecated
+export(blur, equalize)
+export(drawtext, drawfont)
+export(getFeatures, hullFeatures, zernikeMoments)
+export(edgeProfile, edgeFeatures)
+export(haralickFeatures, haralickMatrix)
+export(moments, cmoments, smoments, rmoments)

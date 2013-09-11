@@ -1,0 +1,16 @@
+{
+    "contents" : "library(bioimagetools2)\ntest<-readTIF(\"~/Dropbox/white.tif\")\ntest2<-bwlabel3d(test)",
+    "created" : 1378903512790.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "2985938335",
+    "id" : "FF357F8A",
+    "lastKnownWriteTime" : 176093659229,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

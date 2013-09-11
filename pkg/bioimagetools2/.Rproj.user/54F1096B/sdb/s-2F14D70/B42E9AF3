@@ -1,0 +1,15 @@
+{
+    "contents" : "if(1)\n  {\n  readTIF<-function(file=file.choose(),native=FALSE)\n{\n  require(tiff)\n  li<-readTIFF(file,all=TRUE,info=TRUE,as.is=FALSE,native=native)\n  Z<-length(li)\n  img<-array(0,c(dim(li[[1]])[1:2],Z))\n  if(length(dim(li[[1]]))==2)for (i in 1:Z)img[,,i]<-li[[i]]\n  if(length(dim(li[[1]]))==3)for (i in 1:Z)img[,,i]<-li[[i]][,,1]\n  #storage.mode(img)<-\"integer\"\n  temp<-attributes(li[[1]])\n  tmp<-gregexpr(\"\\n\",temp$description)\n  if(length(tmp)>0)if (tmp[[1]][1]!=-1)\n    {\n      temp2<-regmatches(temp$description,tmp,invert=TRUE)[[1]]\n      temp3<-temp4<-c()\n      for (i in temp2)\n      {\n        j<-gregexpr(\"=\",i)[[1]]\n        j<-regmatches(i,j,invert=TRUE)[[1]]\n        temp3<-c(temp3,j[1])\n        temp4<-c(temp4,j[2])\n      }\n      names(temp4)<-temp3\n      temp<-c(temp,temp4)\n  }\n  temp<-temp[!(names(temp)==\"\")]\n  K<-as.integer(temp$channels)\n  if(length(K)==0)K<-1\n  if (K>1)\n  {\n    img<-array(img,c(dim(li[[1]])[1:2],K,Z/K))\n    #storage.mode(img)<-\"integer\"\n    #for (i in 1:K)img0[,,i,]<-img[,,seq(i,Z,by=K)]\n    #img<-img0\n  }\n  #if(min(img)<0){require(bitops);img<-array(bitFlip(img,bitWidth=temp$bits.per.sample),dim(img))}\n  img<-aperm(img,c(2,1,3:length(dim(img))))\n  #img<-img/(2^(temp$bits.per.sample))\n  if (min(img)<0)img=img-min(img)\n  if (max(img)>1)img<-img/max(img)\n  temp$dim<-dim(img)\n  temp$file<-file\n  attributes(img)<-temp\n  return(img)\n}\n\nwriteTIF<-function(img,file,bps=NULL,attr=attributes(img))\n{\n  require(tiff)\n  if(is.null(bps))if(!is.null(attr$bits.per.sample))bps<-attr$bits.per.sample\n  if(is.null(bps))bps<-8L\n  imglist<-list()\n  if (length(dim(img))==3)\n  {\n    Z<-dim(img)[3]\n    for (i in 1:Z)\n    imglist[[i]]<-img[,,i]/max(img[,,i])\n  }\n  if (length(dim(img))==4)\n  {\n    C<-dim(img)[3]\n    Z<-dim(img)[4]\n    k<-0\n    maxi<-1:C\n    for (j in 1:C)maxi[i]<-max(img[,,j,],na.rm=TRUE)\n    for (i in 1:Z)\n      for (j in 1:C)\n        {\n        k<-k+1\n        imglist[[k]]<-img[,,j,i]/maxi[j]\n        }\n  }\n  Z<-length(imglist)\n  ati<-attributes(img)\n  ati$dim<-dim(imglist[[1]])\n  for (i in 1:Z)\n    attributes(imglist[[i]])<-ati\n  writeTIFF(what=imglist,where=file,reduce=FALSE,bits.per.sample=bps)\n}\n}",
+    "created" : 1378904695573.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "564892512",
+    "id" : "B42E9AF3",
+    "lastKnownWriteTime" : 1378896689,
+    "path" : "~/software/bioimagetools/pkg/bioimagetools/R/readtif.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
