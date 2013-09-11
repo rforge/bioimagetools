@@ -69,20 +69,24 @@ bwlabel3d <- function(im){
 		label <- res[,,i] 
 	}
 	
-	cat(", relabelling...")
+	cat(", relabelling")
 
 	#re-label with 1 to no. of objects
 	labels <- sort(unique(as.vector(res)))[-1]
-	newlabels <- 1:(length(labels))
-	ind <- vector(length(labels), mode="list")
-	for(l in 1:length(labels)){
-		ind[[l]] <-  res == labels[l]
-	}
-	for(l in 1:length(labels)){
-		res[ind[[l]]] <-  newlabels[l]
-	}
-	
-	cat(", done.")
+	n.labels <- length(labels)
+  newlabel<-1
+  
+  for (i in 1:n.labels)
+  { 
+    while (sum(newlabel==labels)>0)newlabel<-newlabel+1
+    if (labels[i]>n.labels){
+      if(labels%%10==1)cat(".")
+      res[res==labels[i]]<-newlabel
+      labels[i]<-newlabel
+    }
+  }
+
+  cat(", done.")
 	
 	return(as.Image(res))
 }
