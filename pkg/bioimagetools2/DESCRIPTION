@@ -1,12 +1,13 @@
 Package: bioimagetools2
-Version: 0.02.10
-Date: 2013-07-22
-Title: Some tools for bioimaging
+Version: 0.03.01
+Date: 2013-11-09
+Title: Some tools for bioimaging including EBImage
 Author: Volker Schmid
 Maintainer: Volker Schmid <stats@volkerschmid.de>
 Depends: R (>= 2.14.0)
 Imports: methods, graphics, stats, abind, utils, tiff, jpeg, png,
         locfit, parallel
 Description: Some tools for bioimaging
-License: GPL
+License: LGPL
+Copyright: This package includes code of the Bioconductor package EBImage, see http://www.bioconductor.org/packages/2.12/bioc/html/EBImage.html; additional code by F.Scheipl 
 URL: http://volkerschmid.de

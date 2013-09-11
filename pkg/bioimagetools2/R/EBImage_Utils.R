@@ -76,15 +76,13 @@ bwlabel3d <- function(im){
 	labels <- sort(unique(as.vector(res)))[-1]
 	n.labels <- length(labels)
 	newlabel<-1
-	
-	for (i in 1:n.labels)
+	n0.labels<-min(which(labels>n.labels))
+	for (i in n0.labels:n.labels)
 	{ 
-	  while (sum(newlabel==labels)>0)newlabel<-newlabel+1
-	  if (labels[i]>n.labels){
-	    if(labels%%10==1)cat(".")
+	    while(sum(newlabel==labels)>0)newlabel<-newlabel+1
+	    if(i%%10==1)cat(".")
 	    res[res==labels[i]]<-newlabel
 	    labels[i]<-newlabel
-	  }
 	}
 	
 	cat(", done.")
