@@ -36,7 +36,6 @@ if(1)
     #img<-img0
   }
   #if(min(img)<0){require(bitops);img<-array(bitFlip(img,bitWidth=temp$bits.per.sample),dim(img))}
-  img<-aperm(img,c(2,1,3:length(dim(img))))
   #img<-img/(2^(temp$bits.per.sample))
   if (min(img)<0)img=img-min(img)
   if (max(img)>1)img<-img/max(img)

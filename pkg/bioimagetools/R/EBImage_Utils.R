@@ -80,7 +80,7 @@ bwlabel3d <- function(im){
   for (i in 1:n.labels)
   { 
     while (sum(newlabel==labels)>0)newlabel<-newlabel+1
-    if (labels[i]>n.labels){
+    if (labels[i]>=n.labels){
       if(i%%10==1)cat(".")
       res[res==labels[i]]<-newlabel
       labels[i]<-newlabel
