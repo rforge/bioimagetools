@@ -1,6 +1,6 @@
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 watershed = function (x, tolerance=1, ext=1) {
-  validImage(x)
+#  validImage(x)
   tolerance = as.numeric(tolerance)
   if (tolerance<0) stop( "'tolerance' must be non-negative" )
   ext = as.integer(ext)
@@ -10,7 +10,7 @@ watershed = function (x, tolerance=1, ext=1) {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 propagate = function (x, seeds, mask=NULL, lambda=1e-4) {
-  validImage(x)
+#  validImage(x)
   checkCompatibleImages(x, seeds)
 
   if (!is.null(mask)) {
@@ -26,7 +26,7 @@ propagate = function (x, seeds, mask=NULL, lambda=1e-4) {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ocontour = function(x) {
-  validImage(x)
+#  validImage(x)
   storage.mode(x)='integer'
   y = .Call('ocontour', x, PACKAGE='bioimagetools2')[-1]
   y = lapply(y, function(z) matrix(z, ncol=2, byrow=TRUE))
@@ -36,6 +36,7 @@ ocontour = function(x) {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bwlabel = function(x) {
-  validImage(x)
-  .Call("bwlabel", castImage(x), PACKAGE='bioimagetools2')
+#  validImage(x)
+#  .Call("bwlabel", castImage(x), PACKAGE='bioimagetools2')
+  .Call("bwlabel", x, PACKAGE='bioimagetools')
 }

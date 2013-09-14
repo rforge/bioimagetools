@@ -81,15 +81,15 @@ bwlabel3d <- function(im){
   { 
     while (sum(newlabel==labels)>0)newlabel<-newlabel+1
     if (labels[i]>n.labels){
-      if(labels%%10==1)cat(".")
+      if(i%%10==1)cat(".")
       res[res==labels[i]]<-newlabel
       labels[i]<-newlabel
     }
   }
 
   cat(", done.")
-	
-	return(as.Image(res))
+	storage.mode(res)='integer'
+	return(res)
 }
 
 #' Computes moments from image objects
