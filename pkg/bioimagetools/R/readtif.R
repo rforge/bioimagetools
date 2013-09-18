@@ -2,7 +2,7 @@ if(1)
   {
   readTIF<-function(file=file.choose(),native=FALSE)
 {
-  require(tiff)
+#  require(tiff)
   li<-readTIFF(file,all=TRUE,info=TRUE,as.is=FALSE,native=native)
   Z<-length(li)
   img<-array(0,c(dim(li[[1]])[1:2],Z))
@@ -47,7 +47,7 @@ if(1)
 
 writeTIF<-function(img,file,bps=NULL,attr=attributes(img))
 {
-  require(tiff)
+#  require(tiff)
   if(is.null(bps))if(!is.null(attr$bits.per.sample))bps<-attr$bits.per.sample
   if(is.null(bps))bps<-8L
   imglist<-list()
