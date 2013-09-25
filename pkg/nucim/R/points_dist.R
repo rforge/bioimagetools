@@ -1,4 +1,4 @@
-compute.distance2border<-function(f,color,N,cores=1,from.spots=TRUE)
+compute.distance2border<-function(f,color,N,from.spots=FALSE,cores=1)
 {
   orig<-getwd()
   setwd(f)
@@ -11,29 +11,29 @@ compute.distance2border<-function(f,color,N,cores=1,from.spots=TRUE)
   
  files<-sample(list.files("blue"))
  dir<-paste("dist2border-",color,"-",N,sep="")
- if(length(list.files("dir"))==0)dir.create(dir)
+ if(length(list.files(dir))==0)dir.create(dir)
     
  if (!from.spots)
    {
-   if(cores>1) jobs <- mclapply(files, compute.distance2border.nospots.file, dir, N, color, mc.preschedule=FALSE)
-   if(cores==1) jobs <- lapply(files, compute.distance2border.nospots.file, dir, N, color)
+   if(cores>1) jobs <- mclapply(files, compute.distance2border.nospots.file, N, color, mc.preschedule=FALSE)
+   if(cores==1) jobs <- lapply(files, compute.distance2border.nospots.file, N, color)
  }
   setwd(orig)
 }
 
-compute.distance2border.nospots.file<-function(file,dir,N,color)
+compute.distance2border.nospots.file<-function(file,N,color)
 {
-  try({
-    print(file)
+  test<-try({
+    dir<-paste("dist2border-",color,"-",N,sep="")
     img<-scan(paste("XYZmic/",file,".txt",sep=""))
     Xmic<-img[1]
     Ymic<-img[2]
     Zmic<-img[3]
     remove(img)
     
-    col<-readImage(paste(color,"/",file,sep=""))
-    class<-readImage(paste("class",N,"/",file,sep=""))
-    mask<-readImage(paste("dapimask/",file,sep=""))
+    col<-readTIF(paste(color,"/",file,sep=""))
+    class<-readTIF(paste("class",N,"/",file,sep=""))
+    mask<-readTIF(paste("dapimask/",file,sep=""))
     
     col<-array(col,dim(col))
     mask<-array(mask,dim(mask))
@@ -75,12 +75,16 @@ compute.distance2border.nospots.file<-function(file,dir,N,color)
     
     d2b = distance2border(points,class,Xmic,Ymic,Zmic,class1=1,mask=mask,hist=TRUE)
     save(d2b,file=paste(dir,"/",file,".Rdata",sep=""))
-  })
+    gc(verbose=FALSE)
+  },silent=TRUE)
+  if(class(test)=="try-error")cat(paste0(file,": ",attr(test,"condition"),"\n"))
+  else(cat(paste0(file," OK\n")))
 }
 compute.distance2border.spots.file<-function(file,dir,N,color)  
 {
   try({
-    print(file)
+    dir<-paste("dist2border-",color,"-",N,sep="")
+    
     img<-scan(paste("XYZmic/",file,".txt",sep=""))
     Xmic<-img[1]
     Ymic<-img[2]
