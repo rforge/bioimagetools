@@ -10,6 +10,8 @@ setwd(f)
     options("mc.cores"=cores)
   }
 files<-(list.files("blue"))
+cat(paste(length(files),"files.\n"))
+
 if(length(list.files("dapimask"))==0)dir.create("dapimask")
 
 
@@ -19,7 +21,7 @@ setwd(orig)
 }
 
 dapimask.file<-function(file){
-  print(file)
+  test<-try({
   blau<-readTIF(paste("blue/",file,sep=""))
   mb<-apply(blau,3,mean)
   mbr<-0.3*sum(range(mb))
@@ -32,7 +34,7 @@ dapimask.file<-function(file){
   blau[blau<0]<-0
   blau<-array(blau,dims)
   blau<-blau/max(blau)
-  blau<-filter(blau,"var",4,1/3)
+  blau<-filterImage3d(blau,"var",4,1/3,silent=TRUE)
   b<-blau>mean(blau)
   #b<-blau>quantile(blau,.8)
   b2<-array(0,dims0)
@@ -41,6 +43,13 @@ dapimask.file<-function(file){
   mask<-1-outside(b2,0,n)
   brush<-makeBrush(2*n-1,shape='box')
   mask<-erode(mask,brush)
+  
+  mask0<-bwlabel3d(mask,silent=TRUE)
+  mask1<-cmoments3d(mask0,mask)
+  
+  which<-rev(order(mask1[,5]))[1]
+  
+  mask<-ifelse(mask0==which,1,0)
   
   if(0)
   { 
@@ -54,4 +63,9 @@ dapimask.file<-function(file){
   #mask<-array(0,dims0)
   #mask[,,small]<-array(as.integer(mask0),dim(mask0))
   writeTIF(mask,paste("dapimask/",file,sep=""),bps=8)
+  remove(blau,mask,mbr,b2)
+  gc(verbose=FALSE)
+},silent=TRUE)
+if(class(test)=="try-error")cat(paste0(file,": ",attr(test,"condition"),"\n"))
+else(cat(paste0(file," OK\n")))
 }  

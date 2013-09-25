@@ -6,7 +6,7 @@
 #' Labels connected objects in a binary image stack.
 #' @param im a stack of binary images (or a 3d-array)   
 #' @return A Grayscale Image object or an array, containing the labelled version of im.
-bwlabel3d <- function(im){
+bwlabel3d <- function(im,silent=FALSE){
 	res <- array(0, dim = dim(im))
 	depth <- dim(im)[3]
 	
@@ -18,10 +18,10 @@ bwlabel3d <- function(im){
 	cluster <- 1:max(label)
 	res[,,1] <- label
 
-	cat("labelling.")
+	if(!silent)cat("labelling.")
 	
 	for(i in 2:depth){
-		cat(".")
+	  if(!silent)cat(".")
 		newlabel <- bwlabel(im[,,i])
 		not0 <- newlabel != 0
 		#make sure labels are unique for each slice
@@ -69,7 +69,7 @@ bwlabel3d <- function(im){
 		label <- res[,,i] 
 	}
 	
-	cat(", relabelling")
+	if(!silent)cat(", relabelling")
 
 	#re-label with 1 to no. of objects
   #changed V.S. 11Sep13
@@ -81,7 +81,7 @@ bwlabel3d <- function(im){
   { 
     while (sum(newlabel==labels)>0)newlabel<-newlabel+1
     if (labels[i]>=n.labels){
-      if(i%%10==1)cat(".")
+      if(!silent)if(i%%10==1)cat(".")
       res[res==labels[i]]<-newlabel
       labels[i]<-newlabel
     }

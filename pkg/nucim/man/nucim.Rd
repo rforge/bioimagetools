@@ -19,7 +19,7 @@ Volker Schmid
 \note{
 }
 \examples{
-\donotrun{
+if(0){
 library(nucim)
 f<-"~/projects/marion/Sep17"
 N<-7

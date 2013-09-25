@@ -7,7 +7,7 @@ find.mode<-function(x)
 
 split.channels.file<-function(file)
 {
-print(file)
+test<-try({
 img<-readTIF(paste("rgb",file,sep="/"))
 
 img<-img-min(img)
@@ -31,13 +31,33 @@ if (D==3)
 red<-red-find.mode(red)
 green<-green-find.mode(green)
 blue<-blue-find.mode(blue)
+
 red[red<0]<-0
 green[green<0]<-0
 blue[blue<0]<-0
 
+red<-red-min(red)
+green<-green-min(green)
+blue<-blue-min(blue)
+red<-red/max(red)
+green<-green/max(green)
+blue<-blue/max(blue)
+
+
 writeTIF(blue,paste("blue/",file,sep=""),bps=16L)
 writeTIF(green,paste("green/",file,sep=""),bps=16L)
 writeTIF(red,paste("red/",file,sep=""),bps=16L)
+
+Xmic<-attr(img,"x.resolution")
+Ymic<-attr(img,"y.resolution")
+Zmic<-as.numeric(attr(img,"slices"))*as.numeric(attr(img,"spacing"))
+write(c(Xmic,Ymic,Zmic),file=paste("XYZmic/",file,".txt",sep=""))
+
+remove(img,red,green,blue)
+gc(verbose=FALSE)
+},silent=TRUE)
+if(class(test)=="try-error")cat(paste0(file,": ",attr(test,"condition"),"\n"))
+else(cat(paste0(file," OK\n")))
 }
 
 split.channels<-function(f,cores=1)
@@ -51,14 +71,15 @@ split.channels<-function(f,cores=1)
     options("mc.cores"=cores)
   }
   
-  files<-list.files("/rgb")
+  files<-list.files("rgb")
+  cat(paste(length(files),"files.\n"))
                 
   if(length(list.files("red"))==0)dir.create("red")
   if(length(list.files("blue"))==0)dir.create("blue")
   if(length(list.files("green"))==0)dir.create("green")
-              
+  if(length(list.files("XYZmic"))==0)dir.create("XYZmic")
+  
   if(cores>1)jobs <- mclapply(files,split.channels.file)
   if(cores==1)jobs <- lapply(files,split.channels.file)
-  XYZ.mic(f,cores=cores)
   setwd(orig)
 }

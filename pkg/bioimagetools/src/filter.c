@@ -40,10 +40,10 @@
 int getid(int x,int y,int z,int X,int Y,int Z);
 
 void varfilter(double* intensity, double* filtered,
-	 double* settings, int* dims, int* filteredint, double* minmax) 
+	 double* settings, int* dims, int* filteredint, double* minmax, int* silent0) 
 {
 GetRNGstate();
-
+int silent=silent0[0];
 int X=dims[0];
 int Y=dims[1];
 int Z=dims[2];
@@ -56,7 +56,7 @@ minmax[1]=0.0;
 minmax[0]=100000000000.0;
 int counter=0;
 int counter2=10;
-Rprintf("00");
+if(silent==0){Rprintf("00");}
 for (int z=0; z<Z; z++)
     {
 for (int x=0; x<X; x++)
@@ -64,11 +64,14 @@ for (int x=0; x<X; x++)
   for (int y=0; y<Y; y++)
    {
 	counter++;
-	if (counter>0.1*N){
+	if(silent==0)
+  {
+    if (counter>0.1*N){
 	Rprintf("\b\b\b%i",counter2);
 	counter2=counter2+10;
 	counter=0;
 	}
+  }
 
     	id=getid(x,y,z,X,Y,Z);  
         sum=0.0;
@@ -96,22 +99,25 @@ for (int x=0; x<X; x++)
     }
   }
 }
-Rprintf("\b\b\b\b");
+if(silent==0){Rprintf("\b\b\b\b");}
 
 for (id=0; id<(X*Y*Z); id++)
 {
 filteredint[id]=floor((filtered[id]-minmax[0])/(minmax[1]-minmax[0])*65535);
 }
+  if(silent==0)
+  {
 Rprintf("done.\n");
+}
 return;
 }
 
 
 void maxfilter(double* intensity, double* filtered,
-	 double* settings, int* dims, int* filteredint, double* minmax) 
+	 double* settings, int* dims, int* filteredint, double* minmax, int* silent0) 
 {
 GetRNGstate();
-
+int silent=silent0[0];
 int X=dims[0];
 int Y=dims[1];
 int Z=dims[2];
@@ -124,20 +130,22 @@ minmax[1]=0.0;
 minmax[0]=100000000000.0;
 int counter=0;
 int counter2=10;
-Rprintf("00");
+if(silent==0){Rprintf("00");}
 for (int z=0; z<Z; z++)
     {
 for (int x=0; x<X; x++)
 {
-  for (int y=0; y<Y; y++)
+    for (int y=0; y<Y; y++)
    {
 	counter++;
+  if(silent==0)
+  {
 	if (counter>0.1*N){
 	Rprintf("\b\b\b%i",counter2);
 	counter2=counter2+10;
 	counter=0;
 	}
-
+}
     	id=getid(x,y,z,X,Y,Z);  
         max=0.0; 
 	for (int i=ceil(-range); i<range; i++)
@@ -160,21 +168,26 @@ for (int x=0; x<X; x++)
     }
   }
 }
+  if(silent==0)
+  {
 Rprintf("\b\b\b\b");
-
+}
 for (id=0; id<(X*Y*Z); id++)
 {
 filteredint[id]=floor((filtered[id]-minmax[0])/(minmax[1]-minmax[0])*65535);
 }
+  if(silent==0)
+  {
 Rprintf("done.\n");
+}
 return;
 }
 
 void minfilter(double* intensity, double* filtered,
-	 double* settings, int* dims, int* filteredint, double* minmax) 
+	 double* settings, int* dims, int* filteredint, double* minmax, int* silent0) 
 {
 GetRNGstate();
-
+int silent=silent0[0];
 int X=dims[0];
 int Y=dims[1];
 int Z=dims[2];
@@ -187,7 +200,10 @@ minmax[1]=0.0;
 minmax[0]=100000000000.0;
 int counter=0;
 int counter2=10;
+  if(silent==0)
+  {
 Rprintf("00");
+}
 for (int z=0; z<Z; z++)
     {
 for (int x=0; x<X; x++)
@@ -195,11 +211,14 @@ for (int x=0; x<X; x++)
   for (int y=0; y<Y; y++)
    {
 	counter++;
+  if(silent==0)
+  {
 	if (counter>0.1*N){
 	Rprintf("\b\b\b%i",counter2);
 	counter2=counter2+10;
 	counter=0;
 	}
+}
 
     	id=getid(x,y,z,X,Y,Z);  
         max=19999999.0; 
@@ -223,13 +242,18 @@ for (int x=0; x<X; x++)
     }
   }
 }
+  if(silent==0)
+  {
 Rprintf("\b\b\b\b");
-
+}
 for (id=0; id<(X*Y*Z); id++)
 {
 filteredint[id]=floor((filtered[id]-minmax[0])/(minmax[1]-minmax[0])*65535);
 }
+  if(silent==0)
+  {
 Rprintf("done.\n");
+}
 return;
 }
 
