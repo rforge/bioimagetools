@@ -31,7 +31,13 @@ std<-standardize(test,mask=mask,N=32,sd=6)
 table.n(std,32)
 colors.in.classes(std,std)
   
-
+plup<-function(i)
+{
+library(foreach)
+library(doParallel)
+registerDoParallel()
+foreach(i=1:10000) %dopar%
+{
 #simuliere Daten zum Testen
 test2<-runif(128*128,0,1)
 test2<-sort(test2)
@@ -74,3 +80,8 @@ test.seg<-segment(test2,nclust=7,beta=.3)
 image(test.seg$class)
 # Auswertung, diesmal in 7 Klassen
 cc<-colors.in.classes(test.seg$class,green,red,col1="green",col2="blue",test=TRUE)
+}
+}
+
+library(parallel)
+mclapply(1:10000,plup)
