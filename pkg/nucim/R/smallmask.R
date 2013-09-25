@@ -26,10 +26,14 @@ mask.small.file<-function(file,color,n)
     
     mask<-readTIF(paste("dapimask/",file,sep=""))
     prot<-readTIF(paste0(color,"/",file))
+    XYZ <- scan(paste0("XYZmic/",file,".txt"))
+    
+    xyzmic<-XYZ/dim(mask)
+    xymic<-mean(xyzmic[1:2])
     pm<-median(prot)
     prot[mask==0]<-pm
     
-    brush<-makeBrush(25,shape="gaussian",sigma=3)
+    brush<-makeBrush(25,shape="gaussian",sigma=.1/xymic)
     prot1<-filterImage2d(prot,brush)
     
     prot1<-prot1-min(prot1)
@@ -46,11 +50,15 @@ mask.small.file<-function(file,color,n)
     xi.mask<-array(0,dim(prot))
     for (i in 1:n)
       xi.mask<-xi.mask+ifelse(prot4==which[i],1,0)
-    
+    xi.mask<-dilate(xi.mask)
+    xi.mask<-erode(xi.mask)
     writeTIF(xi.mask,file=paste0(color,"mask/",file),bps=8)
     remove(mask,prot,prot1,prot13,prot14,prot4,prot5,xi.mask)
     gc(verbose=FALSE)
   },silent=TRUE)
+  print(file)
+  print(test)
+  
   if(class(test)=="try-error")cat(paste0(file,": ",attr(test,"condition"),"\n"))
   else(cat(paste0(file," OK\n")))
 }
