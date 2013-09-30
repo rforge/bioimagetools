@@ -1,5 +1,3 @@
-if(1)
-  {
   readTIF<-function(file=file.choose(),native=FALSE)
 {
   require(tiff)
@@ -45,37 +43,37 @@ if(1)
   return(img)
 }
 
-writeTIF<-function(img,file,bps=NULL,attr=attributes(img))
-{
-  require(tiff)
-  if(is.null(bps))if(!is.null(attr$bits.per.sample))bps<-attr$bits.per.sample
-  if(is.null(bps))bps<-8L
-  imglist<-list()
-  if (length(dim(img))==3)
+writeTIF<-  function (img, file, bps = NULL, twod=FALSE, attr = attributes(img)) 
   {
-    Z<-dim(img)[3]
-    for (i in 1:Z)
-    imglist[[i]]<-img[,,i]/max(img[,,i])
+    require(tiff)
+    if (is.null(bps)) 
+      if (!is.null(attr$bits.per.sample)) 
+        bps <- attr$bits.per.sample
+    if (is.null(bps)) 
+      bps <- 8L
+    imglist <- list()
+    if (length(dim(img)) == 3) {
+      Z <- dim(img)[3]
+      if(twod) for (i in 1:Z) imglist[[i]] <- img[, , i]/max(img[, , i])
+      if(!twod) {
+        maxi<-max(img)
+        for (i in 1:Z) imglist[[i]] <- img[, , i]/maxi
+      }
+    }
+    if (length(dim(img)) == 4) {
+      C <- dim(img)[3]
+      Z <- dim(img)[4]
+      k <- 0
+      maxi <- 1:C
+      for (j in 1:C) maxi[i] <- max(img[, , j, ], na.rm = TRUE)
+      for (i in 1:Z) for (j in 1:C) {
+        k <- k + 1
+        imglist[[k]] <- img[, , j, i]/maxi[j]
+      }
+    }
+    Z <- length(imglist)
+    ati <- attributes(img)
+    ati$dim <- dim(imglist[[1]])
+    for (i in 1:Z) attributes(imglist[[i]]) <- ati
+    writeTIFF(what = imglist, where = file, reduce = FALSE, bits.per.sample = bps)
   }
-  if (length(dim(img))==4)
-  {
-    C<-dim(img)[3]
-    Z<-dim(img)[4]
-    k<-0
-    maxi<-1:C
-    for (j in 1:C)maxi[i]<-max(img[,,j,],na.rm=TRUE)
-    for (i in 1:Z)
-      for (j in 1:C)
-        {
-        k<-k+1
-        imglist[[k]]<-img[,,j,i]/maxi[j]
-        }
-  }
-  Z<-length(imglist)
-  ati<-attributes(img)
-  ati$dim<-dim(imglist[[1]])
-  for (i in 1:Z)
-    attributes(imglist[[i]])<-ati
-  writeTIFF(what=imglist,where=file,reduce=FALSE,bits.per.sample=bps)
-}
-}
