@@ -13,6 +13,7 @@ if (cores>1)
 files<-sample(list.files("blue"))
 cat(paste(length(files),"files.\n"))
 if(length(list.files(paste0("class",N)))==0)dir.create(paste0("class",N))
+if(length(list.files(paste0("class",N,"-n")))==0)dir.create(paste0("class",N,"-n"))
 
 if(cores>1)jobs <- mclapply(files, classify.file, N=N, mc.preschedule=FALSE)
 if(cores==1)jobs <- lapply(files, classify.file, N=N)
@@ -32,7 +33,16 @@ test<-try({
     classes<-array(as.integer(img.seg$class),dim(blau))
     remove(img.seg)
     writeTIF(classes/N,paste("class",N,"/",file,sep=""),bps=8)
-remove(mask,blau,classes)
+  
+    classes<-classes
+    classes<-classes[classes!=0]
+    t=table(classes)
+    print(file)
+    print(t)
+    write(t,file=paste0("class",N,"-n/",file,".txt"),ncolumns=N)
+    write(t,file=paste0("class",N,"-n/",file,"-percent.txt"),ncolumns=N)
+  
+  remove(mask,blau,classes)
 gc(verbose=FALSE)
 },silent=TRUE)
 if(class(test)=="try-error")cat(paste0(file,": ",attr(test,"condition"),"\n"))
