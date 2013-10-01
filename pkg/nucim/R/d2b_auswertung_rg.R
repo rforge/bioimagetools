@@ -10,25 +10,25 @@ distance2border.report<-function(f,N,cores=1)
   }
   
 
-  files<-list.files(paste("dist2border-green-",N,sep=""))
-  dir<-paste("dist2border-",color,"-",N,sep="")
-  if(length(list.files("dir"))==0)dir.create(dir)
+  files<-list.files("green")
+  dir<-"d2bresults"
+  if(length(list.files(dir))==0)dir.create(dir)
   
- if(cores>1)jobs <- mclapply(files, distance2border.report.file, color=color, N=N)
- if(cores==1)jobs <- lapply(files, distance2border.report.file, color=color, N=N)
+ if(cores>1)jobs <- mclapply(files, distance2border.report.file, N=N,mc.preschedule=FALSE)
+ if(cores==1)jobs <- lapply(files, distance2border.report.file, N=N)
   
 }
-distance2border.report.file<-function(f,color,N)
+distance2border.report.file<-function(file,N)
 {
   try({
     xlim<-c(-.3,.3)
     n<-25
     
-    load(paste("dist2border-green-",N,"/",file,sep=""))
+    load(paste0("dist2border-green-",N,"/",file,".Rdata"))
     green.d<-d2b
     green.hist<-hist(d2b[d2b < xlim[2] &d2b > xlim[1]], breaks = seq(xlim[1], xlim[2], length = n), plot=FALSE )
     
-    load(paste("dist2border-red-",N,"/",file,sep=""))
+    load(paste0("dist2border-red-",N,"/",file,".Rdata"))
     red.d<-d2b
     red.hist<-hist(d2b[d2b < xlim[2] & d2b > xlim[1]], breaks = seq(xlim[1], xlim[2], length = n), plot=FALSE)
     
