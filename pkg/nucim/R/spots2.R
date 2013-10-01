@@ -2,7 +2,6 @@ find.spots<-function(f,color,cores=1)
 {
     orig<-getwd()
 setwd(f)
-setwd("~/projects/marion/Sep17")
     library(bioimagetools)
     if (cores>1)
     {
@@ -12,7 +11,7 @@ setwd("~/projects/marion/Sep17")
     
 
 
-    files<-sample(list.files("blue"))
+    files<-sample(list.files(color))
     dir<-paste("spots-",color,sep="")
     if(length(list.files(dir))==0)dir.create(dir)
     
@@ -35,14 +34,14 @@ find.spots.file<-function(file, dir,color)
         thresh<-c()
         for (i in sample(100:200,10))
         {
-          temp<-hist(col2,n=i)
+          temp<-hist(col2,breaks=i,plot=FALSE)
           m<-min(which(diff(temp$counts)>0))
           thresh<-c(thresh,temp$mids[m])
         }
         gc()
         
-        #thresh<-quantile(thresh,na.rm=TRUE,probs=2/3)
-        thresh<-max(thresh,na.rm=TRUE,2/3)
+        thresh<-quantile(thresh,na.rm=TRUE,probs=2/3)
+        #thresh<-max(thresh,na.rm=TRUE,2/3)
         white<-array(ifelse(col>thresh,1,0)*mask,dim(col))
         spots<-bwlabel3d(white)
         spots<-aperm(spots,c(2,1,3))
