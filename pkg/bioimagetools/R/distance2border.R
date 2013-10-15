@@ -1,5 +1,5 @@
 distance2border<-function (points, img.classes, x.microns, y.microns, z.microns, 
-                           class1, class2 = NULL, mask = array(TRUE, dim(img.classes)), 
+                           class1, class2 = NULL, mask = array(TRUE, dim(img.classes)), voxel=FALSE,
                            hist = FALSE, main = "Minimal distance to border", xlab = "Distance in Microns", 
                            xlim = c(-0.3, 0.3), n = 20, stats = TRUE, file = NULL) 
 {
@@ -7,9 +7,19 @@ distance2border<-function (points, img.classes, x.microns, y.microns, z.microns,
   X <- dims[1]
   Y <- dims[2]
   Z <- dims[3]
-  points.discrete <- data.frame(x = 1 + floor(X * points[,1]/x.microns), 
-                                y = 1 + floor(Y * points[,2]/y.microns), z = 1 + floor(Z * 
-                                                                                         points[,3]/z.microns))
+  
+  if(voxel)
+  {
+    points.discrete <- points
+    points <- data.frame(x = (points.discrete[,1]-1)*x.microns/X, 
+                                  y = (points.discrete[,2]-1)*y.microns/Y, z = (points.discrete[,3]-1)*z.microns/Z)
+  }
+  
+  if(!voxel)
+    points.discrete <- data.frame(x = 1 + floor(X * points[,1]/x.microns), 
+                                y = 1 + floor(Y * points[,2]/y.microns), z = 1 + floor(Z * points[,3]/z.microns))
+  
+  
   cat("-")
  
   if(require(parallel))valid<-mclapply(1:dim(points.discrete)[1],bioimagetools..validate,points,points.discrete,mask,img.classes,class1)
