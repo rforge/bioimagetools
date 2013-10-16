@@ -65,7 +65,7 @@ writeTIF<-  function (img, file, bps = NULL, twod=FALSE, attr = attributes(img))
       Z <- dim(img)[4]
       k <- 0
       maxi <- 1:C
-      for (j in 1:C) maxi[i] <- max(img[, , j, ], na.rm = TRUE)
+      for (j in 1:C) maxi[j] <- max(img[, , j, ], na.rm = TRUE)
       for (i in 1:Z) for (j in 1:C) {
         k <- k + 1
         imglist[[k]] <- img[, , j, i]/maxi[j]
