@@ -1,4 +1,4 @@
 .onAttach<-function(libname, pkgname)
 {
-packageStartupMessage(message("Welcome to Bioimagetools\n","Version 0.2.20"))
+  packageStartupMessage(message("Bioimagetools, ver 0.2.20"))
 }
