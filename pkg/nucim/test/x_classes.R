@@ -2,7 +2,7 @@ library(bioimagetools)
 library(fields)
 
 setwd("/home/schmid/projects/marion/C2C12Xpaint")
-files<-sample(list.files("blue"))
+files<-(list.files("blue"))
 for (file in files)
 {
   try({
@@ -21,12 +21,9 @@ for (file in files)
   image.plot(ifelse(xm==0,NA,xm),add=TRUE)
   dev.off()
   
-})
-}
- 
   t0<-table.n(as.vector(class[mask==1]),7)
   write(c(file,t0),file="x_results/class_all.txt",append=TRUE,ncolumns=8)
-  for (i in 1:4)
+  for (i in 1:10)
     {
     t<-table.n(as.vector(class[mask==1&xmask==i]),7)
     write(c(file,i,t),file="x_results/class_x.txt",append=TRUE,ncolumns=9)
