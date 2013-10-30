@@ -5,49 +5,65 @@ find.mode<-function(x)
 }
 
 
-split.channels.file<-function(file)
+split.channels.file<-function(file,channels)
 {
 test<-try({
 img<-readTIF(paste("rgb",file,sep="/"))
 
+rr<-which(channels=="red")
+gg<-which(channels=="green")
+bb<-which(channels=="blue")
+
+red=green=blue=0
+
 D<-length(dim(img))
 if (D==4)
 {
-  red<-img[,,1,]
-  green<-img[,,2,]
-  blue<-img[,,3,]
+  if(length(rr)>0)red<-img[,,rr,]
+  if(length(gg)>0)green<-img[,,gg,]
+  if(length(bb)>0)blue<-img[,,bb,]
 }
 if (D==3)
 {
   Z<-dim(img)[3]
-  red<-img[,,seq(1,Z,by=3)]  
-  green<-img[,,seq(2,Z,by=3)]  
-  blue<-img[,,seq(3,Z,by=3)]  
+  byby=length(channels)
+  if(length(rr)>0)red<-img[,,seq(rr,Z,by=byby)]  
+  if(length(gg)>0)green<-img[,,seq(gg,Z,by=byby)]  
+  if(length(bb)>0)blue<-img[,,seq(bb,Z,by=byby)]  
 }
 
+
+if(length(rr)>0)
+{
 red<-red-find.mode(red)
-green<-green-find.mode(green)
-bluecut<-blue-find.mode(blue)
-
 red[red<0]<-0
-green[green<0]<-0
-bluecut[bluecut<0]<-0
-
 red<-red-min(red)
-green<-green-min(green)
-bluecut<-bluecut-min(bluecut)
-blue<-blue-min(blue)
-
 red<-red/max(red)
-green<-green/max(green)
-blue<-blue/max(blue)
-bluecut<-bluecut/max(bluecut)
-
-
-writeTIF(bluecut,paste("blue/",file,sep=""),bps=16L)
-#writeTIF(blue,paste("blueorig/",file,sep=""),bps=16L)
-writeTIF(green,paste("green/",file,sep=""),bps=16L)
 writeTIF(red,paste("red/",file,sep=""),bps=16L)
+}
+
+if(length(gg)>0)
+{
+green<-green-find.mode(green)
+green[green<0]<-0
+green<-green-min(green)
+green<-green/max(green)
+writeTIF(green,paste("green/",file,sep=""),bps=16L)
+}
+
+
+if(length(bb)>0)
+{
+bluecut<-blue-find.mode(blue)
+bluecut[bluecut<0]<-0
+bluecut<-bluecut-min(bluecut)
+#blue<-blue-min(blue)
+#blue<-blue/max(blue)
+bluecut<-bluecut/max(bluecut)
+writeTIF(bluecut,paste("blue/",file,sep=""),bps=16L)
+}
+
+
 
 Xmic<-attr(img,"x.resolution")
 Ymic<-attr(img,"y.resolution")
@@ -61,7 +77,7 @@ if(class(test)=="try-error")cat(paste0(file,": ",attr(test,"condition"),"\n"))
 else(cat(paste0(file," OK\n")))
 }
 
-split.channels<-function(f,cores=1)
+split.channels<-function(f,channels=c("red","green","blue"),cores=1)
 {
   orig<-getwd()
   setwd(f)
@@ -81,7 +97,7 @@ split.channels<-function(f,cores=1)
   if(length(list.files("green"))==0)dir.create("green")
   if(length(list.files("XYZmic"))==0)dir.create("XYZmic")
   
-  if(cores>1)jobs <- mclapply(files,split.channels.file)
-  if(cores==1)jobs <- lapply(files,split.channels.file)
+  if(cores>1)jobs <- mclapply(files,split.channels.file,channels)
+  if(cores==1)jobs <- lapply(files,split.channels.file,channels)
   setwd(orig)
 }
