@@ -4,7 +4,7 @@
   Y<-round(point[2])
   Z<-round(point[3])
 #  print(c(X,Y,Z,dim(mask)))
-  if(mask[X,Y,Z])return(classes[X,Y,Z])
+  if(mask[X,Y,Z]==1)return(classes[X,Y,Z])
   else{return(NA)}
 }
 
@@ -16,7 +16,7 @@ table.points<-function(classes,color,mic=FALSE,mask=array(TRUE,dim(classes)))
     color[,2]<-color[,2]/mic[2]*dim(color)[2]
     color[,3]<-color[,3]/mic[3]*dim(color)[3]
   }
-  if(require(parallel))points<-apply(color,1,.tp,classes,mask)
+  points<-apply(color,1,.tp,classes,mask)
   return(table(points[!is.na(points)]))
   
 }
