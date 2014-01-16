@@ -11,7 +11,7 @@
   return(x[i-1])
 }
 
-mask.dapi<-function(img,mic)
+mask.dapi<-function(img,mic,thresh="auto")
 {
   mb<-apply(img,3,mean)
   mbr<-0.3*sum(range(mb))
@@ -33,7 +33,7 @@ mask.dapi<-function(img,mic)
   blau2<-filterImage2d(blau,brush)
   xx<-apply(blau2,1,mean)
   yy<-apply(blau2,2,mean)
-  thresh<-c(.find.first.mode(xx),.find.first.mode(rev(xx)),.find.first.mode(yy),.find.first.mode(rev(yy)))
+  if(thresh=="auto")thresh<-c(.find.first.mode(xx),.find.first.mode(rev(xx)),.find.first.mode(yy),.find.first.mode(rev(yy)))
   
   b<-blau>median(thresh/2)
   #b<-blau>quantile(blau,.8)
