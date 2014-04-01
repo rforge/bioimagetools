@@ -25,7 +25,9 @@ bwlabel3d <- function(im,silent=FALSE){
 		newlabel <- bwlabel(im[,,i])
 		not0 <- newlabel != 0
 		#make sure labels are unique for each slice
-		newlabel[not0] <- newlabel[not0] + i*10^(1+floor(log(max(newlabel), 10)))
+		#newlabel[not0] <- newlabel[not0] + i*10^(1+floor(log(max(newlabel), 10))) #
+    # changed VS 1Apr2014
+		newlabel[not0] <- newlabel[not0] + max(res)
 		done <- !not0
 		alreadyWritten <- !not0
 		
@@ -44,9 +46,22 @@ bwlabel3d <- function(im,silent=FALSE){
 						previousLabel <-  unique(res[,,i][overwrite])
 						#necessary if overwrite covers area of more than 2 different labels
 						previousLabel <- previousLabel[previousLabel!=0] 
-						res[relabel] <- previousLabel
-						#remove label 'l' from activeLabels 
-						updatedLabels <- updatedLabels[updatedLabels!=l]
+						if (length(previousLabel)==1) # changed VS 1Apr2014
+              {
+              res[relabel] <- previousLabel
+					  	#remove label 'l' from activeLabels 
+					  	updatedLabels <- updatedLabels[updatedLabels!=l]
+						 }
+						if (length(previousLabel)>1) # changed VS 1Apr2014
+						{
+              for (j in previousLabel)
+                {
+                res[relabel] <- previousLabel[j]
+                relabel <- previousLabel[j]
+						  #remove label 'l' from activeLabels 
+  						  updatedLabels <- updatedLabels[updatedLabels!=l]
+              }
+						}
 					} else {
 						res[,,i][overwrite] <- l
 					}	
