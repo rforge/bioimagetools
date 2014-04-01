@@ -52,12 +52,12 @@ bwlabel3d <- function(im,silent=FALSE){
 					  	#remove label 'l' from activeLabels 
 					  	updatedLabels <- updatedLabels[updatedLabels!=l]
 						 }
-						if (length(previousLabel)>1) # changed VS 1Apr2014
+						if (length(previousLabel)>1) # added VS 1Apr2014
 						{
               for (j in previousLabel)
                 {
-                res[relabel] <- previousLabel[j]
-                relabel <- previousLabel[j]
+                res[relabel] <- j
+                relabel <- j
 						  #remove label 'l' from activeLabels 
   						  updatedLabels <- updatedLabels[updatedLabels!=l]
               }
