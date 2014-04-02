@@ -6,106 +6,106 @@
 #' Labels connected objects in a binary image stack.
 #' @param im a stack of binary images (or a 3d-array)   
 #' @return A Grayscale Image object or an array, containing the labelled version of im.
-bwlabel3d <- function(im,silent=FALSE){
-	res <- array(0, dim = dim(im))
-	depth <- dim(im)[3]
-	
-	label <- bwlabel(im[,,1])
-	#make sure labels are unique for each slice
-	label[label != 0] <- label[label != 0] + 10^(1+floor(log(max(label), 10)))
-	updatedLabels <- activeLabels <- unique(as.vector(label[label != 0])) 
-	
-	cluster <- 1:max(label)
-	res[,,1] <- label
-
-	if(!silent)cat("labelling.")
-	
-	for(i in 2:depth){
-	  if(!silent)cat(".")
-		newlabel <- bwlabel(im[,,i])
-		not0 <- newlabel != 0
-		#make sure labels are unique for each slice
-		#newlabel[not0] <- newlabel[not0] + i*10^(1+floor(log(max(newlabel), 10))) #
-    # changed VS 1Apr2014
-		newlabel[not0] <- newlabel[not0] + max(res)
-		done <- !not0
-		alreadyWritten <- !not0
-		
-		if(length(activeLabels)){
-			for(l in activeLabels){
-				#propagate label 'l' into this slice in stack if there is overlap
-				overlap <- not0 & label == l
-				if(any(overlap)){
-					#overwrite all pixels with the same labels as those in the overlap with label 'l'
-					overwrite <- apply(newlabel, 2, "%in%", unique(as.vector(newlabel[overlap])))
-			
-					# check if pixels in overlap have already been relabeled,
-					# if yes the label to be assigned can be replaced with the previously assigned one 
-					if(any(alreadyWritten[overwrite]>0)){
-						relabel <- which(res == l, arr.ind=T)
-						previousLabel <-  unique(res[,,i][overwrite])
-						#necessary if overwrite covers area of more than 2 different labels
-						previousLabel <- previousLabel[previousLabel!=0] 
-						if (length(previousLabel)==1) # changed VS 1Apr2014
-              {
-              res[relabel] <- previousLabel
-					  	#remove label 'l' from activeLabels 
-					  	updatedLabels <- updatedLabels[updatedLabels!=l]
-						 }
-						if (length(previousLabel)>1) # added VS 1Apr2014
-						{
-              for (j in previousLabel)
-                {
-                res[relabel] <- j
-                relabel <- j
-						  #remove label 'l' from activeLabels 
-  						  updatedLabels <- updatedLabels[updatedLabels!=l]
-              }
-						}
-					} else {
-						res[,,i][overwrite] <- l
-					}	
-					done[overwrite] <- TRUE
-					
-					alreadyWritten <- alreadyWritten + overwrite
-				} else {
-					#remove label 'l' from activeLabels if there is no overlap
-					updatedLabels <- updatedLabels[updatedLabels!=l]
-				}
-			}
-			
-		}
-		if(any(!done)){
-			#add new labels for objects
-			updatedLabels <-c(updatedLabels, unique(as.vector(newlabel[!done])))
-			res[,,i][!done] <- newlabel[!done]
-		} 
-		activeLabels <- updatedLabels
-		label <- res[,,i] 
-	}
-	
-	if(!silent)cat(", relabelling")
-
-	#re-label with 1 to no. of objects
-  #changed V.S. 11Sep13
-	labels <- sort(unique(as.vector(res)))[-1]
-	n.labels <- length(labels)
-  newlabel<-1
-  
-  for (i in 1:n.labels)
-  { 
-    while (sum(newlabel==labels)>0)newlabel<-newlabel+1
-    if (labels[i]>=n.labels){
-      if(!silent)if(i%%10==1)cat(".")
-      res[res==labels[i]]<-newlabel
-      labels[i]<-newlabel
-    }
-  }
-
-  cat(", done.")
-	storage.mode(res)='integer'
-	return(res)
-}
+# bwlabel3d <- function(im,silent=FALSE){
+# 	res <- array(0, dim = dim(im))
+# 	depth <- dim(im)[3]
+# 	
+# 	label <- bwlabel(im[,,1])
+# 	#make sure labels are unique for each slice
+# 	label[label != 0] <- label[label != 0] + 10^(1+floor(log(max(label), 10)))
+# 	updatedLabels <- activeLabels <- unique(as.vector(label[label != 0])) 
+# 	
+# 	cluster <- 1:max(label)
+# 	res[,,1] <- label
+# 
+# 	if(!silent)cat("labelling.")
+# 	
+# 	for(i in 2:depth){
+# 	  if(!silent)cat(".")
+# 		newlabel <- bwlabel(im[,,i])
+# 		not0 <- newlabel != 0
+# 		#make sure labels are unique for each slice
+# 		#newlabel[not0] <- newlabel[not0] + i*10^(1+floor(log(max(newlabel), 10))) #
+#     # changed VS 1Apr2014
+# 		newlabel[not0] <- newlabel[not0] + max(res)
+# 		done <- !not0
+# 		alreadyWritten <- !not0
+# 		
+# 		if(length(activeLabels)){
+# 			for(l in activeLabels){
+# 				#propagate label 'l' into this slice in stack if there is overlap
+# 				overlap <- not0 & label == l
+# 				if(any(overlap)){
+# 					#overwrite all pixels with the same labels as those in the overlap with label 'l'
+# 					overwrite <- apply(newlabel, 2, "%in%", unique(as.vector(newlabel[overlap])))
+# 			
+# 					# check if pixels in overlap have already been relabeled,
+# 					# if yes the label to be assigned can be replaced with the previously assigned one 
+# 					if(any(alreadyWritten[overwrite]>0)){
+# 						relabel <- which(res == l, arr.ind=T)
+# 						previousLabel <-  unique(res[,,i][overwrite])
+# 						#necessary if overwrite covers area of more than 2 different labels
+# 						previousLabel <- previousLabel[previousLabel!=0] 
+# 						#if (length(previousLabel)==1) # changed VS 1Apr2014
+#             #  {
+#               res[relabel] <- previousLabel
+# 					  	#remove label 'l' from activeLabels 
+# 					  	updatedLabels <- updatedLabels[updatedLabels!=l]
+# 						# }
+# 						#if (length(previousLabel)>1) # added VS 1Apr2014
+# 						#{
+#             #  for (j in previousLabel)
+#             #    {
+#             #    res[relabel] <- j
+#             #    relabel <- j
+# 						#  #remove label 'l' from activeLabels 
+#   					#	  updatedLabels <- updatedLabels[updatedLabels!=l]
+#             #  }
+# 						#}
+# 					} else {
+# 						res[,,i][overwrite] <- l
+# 					}	
+# 					done[overwrite] <- TRUE
+# 					
+# 					alreadyWritten <- alreadyWritten + overwrite
+# 				} else {
+# 					#remove label 'l' from activeLabels if there is no overlap
+# 					updatedLabels <- updatedLabels[updatedLabels!=l]
+# 				}
+# 			}
+# 			
+# 		}
+# 		if(any(!done)){
+# 			#add new labels for objects
+# 			updatedLabels <-c(updatedLabels, unique(as.vector(newlabel[!done])))
+# 			res[,,i][!done] <- newlabel[!done]
+# 		} 
+# 		activeLabels <- updatedLabels
+# 		label <- res[,,i] 
+# 	}
+# 	
+# 	if(!silent)cat(", relabelling")
+# 
+# 	# re-label with 1 to no. of objects
+#   # changed V.S. 11Sep13
+# 	labels <- sort(unique(as.vector(res)))[-1]
+# 	n.labels <- length(labels)
+#   newlabel<-1
+#   
+#   for (i in 1:n.labels)
+#   { 
+#     while (sum(newlabel==labels)>0)newlabel<-newlabel+1
+#     if (labels[i]>=n.labels){
+#       if(!silent)if(i%%10==1)cat(".")
+#       res[res==labels[i]]<-newlabel
+#       labels[i]<-newlabel
+#     }
+#   }
+# 
+#   cat(", done.")
+# 	storage.mode(res)='integer'
+# 	return(res)
+# }
 
 #' Computes moments from image objects
 #' 
