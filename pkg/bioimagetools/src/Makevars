@@ -1,2 +1,2 @@
-PKG_LIBS=-ltiff -ljpeg
+# PKG_LIBS=-ltiff -ljpeg
 # PKG_CFLAGS=
