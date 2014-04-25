@@ -1,5 +1,6 @@
 bwlabel3d<-function(img)
 {
+  .status=.status(NULL)
   Z <- dim(img)[3]
   obj <- array(0,dim(img))
   for (i in 1:Z)
@@ -11,6 +12,7 @@ bwlabel3d<-function(img)
   temp2 <- obj[,,1]!=0
   for (i in 2:Z)
   {
+    .status=.status(.status)
     temp1 <- temp2
     temp2 <- obj[,,i]!=0
     overlap <- temp1&temp2
@@ -33,6 +35,7 @@ bwlabel3d<-function(img)
   labels<-sort(labels[labels!=0])
   for (i in 1:length(labels))
   {
+    .status=.status(.status)
     obj[obj==labels[i]]=i
   }
   return(obj)
