@@ -1,4 +1,3 @@
-
 readBMP<-function(file)
 {
 input<-file(file,"rb")
@@ -20,6 +19,8 @@ readBin(input,integer(),size=2)
 result<-readBin(input,integer(),n=X*Y,size=bpp/8)
 result<-array(result,c(X,Y))
 close(input)
+
+
 return(result)
 }
 
