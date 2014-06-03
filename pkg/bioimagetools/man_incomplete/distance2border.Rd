@@ -3,7 +3,7 @@
 \title{
 A function to compute the distance from  }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Find distances to borders in classified image
 }
 \usage{
 distance2border(points, img.classes, x.microns, y.microns, z.microns, class1, class2 = NULL, mask = array(TRUE, dim(img.classes)), hist = FALSE, main = "Minimal distance to border", xlab = "Distance in Microns", xlim = c(-0.3, 0.3), n = 20, stats = TRUE, file = NULL)
