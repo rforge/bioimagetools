@@ -2,7 +2,7 @@
 \alias{Lcross3denvelope}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Envelope for multitype L Function (Cross-type, 3d)
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
