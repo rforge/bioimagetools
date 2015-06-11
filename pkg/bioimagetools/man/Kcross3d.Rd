@@ -26,7 +26,7 @@ or \code{"best"}. It specifies the edge correction(s) to be applied.}
 This function \code{Kcross} and its companions \code{Kdot} and \code{Kmulti} are generalisations of the function \code{Kest} to multitype point patterns.
 
 A multitype point pattern is a spatial pattern of points classified into a finite number of possible
-“colours” or “types”. In the \textbf{spatstat} package, a multitype pattern is represented as a single point pattern object in which the points carry marks, and the mark value attached to each point determines the type of that point.
+“colours” or “types”. In the \\textbf{spatstat} package, a multitype pattern is represented as a single point pattern object in which the points carry marks, and the mark value attached to each point determines the type of that point.
 
 The argument \code{X} must be a point pattern (object of class \code{"ppp"}) or any data that are acceptable to \code{as.ppp}. It must be a marked point pattern, and the mark vector \code{X$marks} must be a factor.
 
@@ -34,12 +34,12 @@ The arguments \code{i} and \code{j} will be interpreted as levels of the factor
 \code{X$marks}. If \code{i} and \code{j} are missing, they default to the first and second level of the marks factor, respectively.
 
 The “cross-type” (type $i$ to type $j$) $K$
-function of a stationary multitype point process $X$ is defined so that $\lambda_j K_{ij}(r)$
+function of a stationary multitype point process $X$ is defined so that $\\lambda_j K_{ij}(r)$
 equals the expected number of additional random points of type $j$
 within a distance $r$ of a typical point of type $i$ in the process $X$. Here
-$\lambda_j$ is the intensity of the type $j$ points, i.e. the expected number of points of type $j$ per unit area. The function $K_{ij}$ is determined by the second order moment properties of $X$.
+$\\lambda_j$ is the intensity of the type $j$ points, i.e. the expected number of points of type $j$ per unit area. The function $K_{ij}$ is determined by the second order moment properties of $X$.
 
-An estimate of $K_{ij}(r)$ is a useful summary statistic in exploratory data analysis of a multitype point pattern. If the process of type $i$ points were independent of the process of type $j$ points, then $K_{ij}(r)$ would equal $\pi r^2$. Deviations between the empirical $K_{ij}$ curve and the theoretical curve $\pi r^2$ may suggest dependence between the points of types $i$ and $j$.
+An estimate of $K_{ij}(r)$ is a useful summary statistic in exploratory data analysis of a multitype point pattern. If the process of type $i$ points were independent of the process of type $j$ points, then $K_{ij}(r)$ would equal $\\pi r^2$. Deviations between the empirical $K_{ij}$ curve and the theoretical curve $\\pi r^2$ may suggest dependence between the points of types $i$ and $j$.
 
 This algorithm estimates the distribution function
 $K_{ij}(r)$ from the point pattern \code{X}. It assumes that \code{X} can be treated as a realisation of a stationary (spatially homogeneous) random spatial point process in the plane, observed through a bounded window. The window (which is specified in \code{X} as \code{X$window}) may have arbitrary shape. Biases due to edge effects are treated in the same manner as in \code{Kest}, using the border correction.
@@ -56,7 +56,7 @@ Essentially a data frame containing numeric columns
 
 
   \item{r}{the values of the argument $r$ at which the function $K_{ij}(r)$ has been estimated}
-  \item{theo}{the theoretical value of $K_{ij}(r)$ for a marked Poisson process, namely $\pi r^2$}
+  \item{theo}{the theoretical value of $K_{ij}(r)$ for a marked Poisson process, namely $\\pi r^2$}
 
 together with a column or columns named
 \code{"border", "bord.modif", "iso"} and/or \code{"trans"}, according to the selected edge corrections. These columns contain estimates of the function $K_{ij}(r)$ obtained by the edge corrections named.
@@ -66,16 +66,16 @@ If \code{ratio=TRUE} then the return value also has two attributes called \code{
 }
 \section{Warnings}{
 The arguments \code{i} and \code{j} are always interpreted as levels of the factor
-\code{X$marks}. They are converted to character strings if they are not already character strings. The value \code{i=1} does \textbf{not} refer to the first
+\code{X$marks}. They are converted to character strings if they are not already character strings. The value \code{i=1} does \\textbf{not} refer to the first
 level of the factor.
 }
-\references{Cressie, N.A.C. \emph{Statistics for spatial data.} John Wiley and Sons, 1991.
-Diggle, P.J. \emph{Statistical analysis of spatial point patterns.} Academic Press, 1983.
-Harkness, R.D and Isham, V. (1983) A bivariate spatial point pattern of ants’ nests. \emph{Applied Statistics} \textbf{32}, 293–303
+\references{Cressie, N.A.C. \\emph{Statistics for spatial data.} John Wiley and Sons, 1991.
+Diggle, P.J. \\emph{Statistical analysis of spatial point patterns.} Academic Press, 1983.
+Harkness, R.D and Isham, V. (1983) A bivariate spatial point pattern of ants’ nests. \\emph{Applied Statistics} \\textbf{32}, 293–303
 Lotwick, H. W. and Silverman, B. W. (1982). Methods for analysing spatial processes of several types of points.
-\emph{J. Royal Statist. Soc. Ser. B} \textbf{44}, 406–413.
-Ripley, B.D. \emph{Statistical inference for spatial processes.} Cambridge University Press, 1988.
-Stoyan, D, Kendall, W.S. and Mecke, J. \emph{Stochastic geometry and its applications.} 2nd edition. Springer Verlag, 1995.
+\\emph{J. Royal Statist. Soc. Ser. B} \\textbf{44}, 406–413.
+Ripley, B.D. \\emph{Statistical inference for spatial processes.} Cambridge University Press, 1988.
+Stoyan, D, Kendall, W.S. and Mecke, J. \\emph{Stochastic geometry and its applications.} 2nd edition. Springer Verlag, 1995.
 }
 \author{Adrian Baddeley \code{<Adrian.Baddeley@uwa.edu.au> http://www.maths.uwa.edu.au/~adrian/}
 and Rolf Turner \code{<r.turner@auckland.ac.nz>}}

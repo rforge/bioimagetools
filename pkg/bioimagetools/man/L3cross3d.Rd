@@ -14,7 +14,7 @@ function $L_{ij}(r)$ will be computed. It must be a multitype point pattern (a m
 }
 \details{
 The cross-type L-function is a transformation of the cross-type K-function,
-$L_{ij}(r) = \sqrt{\frac{K_{ij}(r)}{\pi}}$
+$L_{ij}(r) = \\sqrt{\\frac{K_{ij}(r)}{\\pi}}$
 where K_{ij}(r) is the cross-type K-function from type \code{i} to type \code{j}. See
 \code{Kcross} for information about the cross-type K-function.
 
@@ -53,6 +53,7 @@ $L_{ij}$ obtained by the edge corrections named.
 
 \seealso{
 \code{Kcross, Ldot, Lest}
+}
 \examples{
 data(amacrine)
 L <- Lcross(amacrine, "off", "on")
